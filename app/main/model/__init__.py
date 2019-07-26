@@ -1,8 +1,9 @@
 import pymysql
 
-DB_HOST = "localhost"
-DB_USER = "iwang"
-DB_PASS = "Root@!234"
+#mysql connection
+DB_HOST = "192.168.62.136"
+DB_USER = "epcmsadmin"
+DB_PASS = "cDc@2019"
 DB_DBASE = "cdccms"
 
 

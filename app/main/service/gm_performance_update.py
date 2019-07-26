@@ -1,6 +1,7 @@
 from . import CommonMethod
+from datetime import datetime
 
-common =  CommonMethod()
+common = CommonMethod()
 
 class GM_Performance_Setter:
     PV_TR_SUMMARY = (
@@ -22,7 +23,4 @@ class GM_Performance_Update(GM_Performance_Setter):
         return common.TemplateBuilder(self.PV_TR_SUMMARY)
 
     def TRSummary(self):
-        return common.TemplateBuilder(self.PV_TR_SUMMARY)
-
-    def TestCommon(self):
         return common.TemplateBuilder(self.PV_TR_SUMMARY)
