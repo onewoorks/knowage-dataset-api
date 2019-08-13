@@ -190,7 +190,7 @@ class PendingPaymentCyclePerformanceUpdate(PendingPaymentCycle):
 
     def PendingPaymentCycleMilFix(self, returned_data):
         fixData = []
-        for i in returned_data[1:]:
+        for i in returned_data[2:]:
             inn = self.ConvertValue(i)
             fixData.append(inn)
         return fixData
@@ -198,7 +198,13 @@ class PendingPaymentCyclePerformanceUpdate(PendingPaymentCycle):
     def ConvertValue(self,dict_values):
         clean = {}
         for i in dict_values:
-            clean[i] = str (dict_values[i])
+            
+            if i != 'a' and dict_values[i] != "":
+                print("{} -> {}".format(i,dict_values[i]))
+                val = format(dict_values[i],',d')
+            else:
+                val = dict_values[i]
+            clean[i] = val
         return clean
 
 
