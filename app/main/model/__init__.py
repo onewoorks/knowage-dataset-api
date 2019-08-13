@@ -1,4 +1,5 @@
 import pymysql
+import cx_Oracle
 
 #mysql connection
 DB_HOST = "192.168.62.136"
@@ -19,3 +20,9 @@ def execute_query(query):
     cursor.execute(query)
     data = cursor.fetchall()
     return data
+
+def execute_oracle_query(query):
+    connection = cx_Oracle.connect("ngep_cms/ng3p_cms@rac-cluster-scan.eperolehan.com.my:1521/ngepsit")
+    cursor = connection.cursor()
+    cursor.execute(query)
+    data = cursor

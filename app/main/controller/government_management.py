@@ -1,32 +1,38 @@
 from flask_restplus import Namespace, Resource
-from ..service.gm_performance_update import GM_Performance_Update
 from ..service.gm.contribution_of_pv import ContributionOfPVPerformanceUpdate
 from ..service.gm.pending_payment_cycle import PendingPaymentCyclePerformanceUpdate
+from ..service.gm.pv_tr_summary import PvTrSummaryPerformanceUpdate
+from ..service.gm.pv_status import PVStatusPerformanceUpdate
+
+from ..model.gm_query import GM_Query
+
+gm_query = GM_Query()
 
 api = Namespace('GM', 'Summary dataset of performance update for Government Management')
 
-gm_pu = GM_Performance_Update()
 gm_contrubution_of_pv = ContributionOfPVPerformanceUpdate()
 gm_pending_payment_cycle = PendingPaymentCyclePerformanceUpdate()
+gm_pv_tr_summary = PvTrSummaryPerformanceUpdate()
+gm_pv_status = PVStatusPerformanceUpdate()
 
 @api.route('/pv-summary')
 class GM_PVSummary(Resource):
     def get(self):
-        data = gm_pu.PVSummary()
+        data = gm_pv_tr_summary.PVSummary()
         return data
 
 @api.route('/tr-summary')
 class GM_TRSummary(Resource):
     def get(self):
-        data = gm_pu.TRSummary()
+        data = gm_pv_tr_summary.TRSummary()
         return data
 
 @api.route('/pv-status')
 class GM_PVStatus(Resource):
     def get(self):
-        return { 
-            "data":"no data"
-        }
+        ministry = gm_query.get_pv_status()
+        data = gm_pv_status.PVStatusSummary(ministry)
+        return data
 
 @api.route('/pending-payment-cycle/<mode>/', endpoint= "pending-payment-cycle", defaults={ 'mode': 'amount'})
 @api.param('mode',"amount, percentage")

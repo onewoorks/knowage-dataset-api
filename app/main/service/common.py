@@ -6,7 +6,7 @@ class CommonMethod:
         return month_name[month_int-1]
 
     def GetWorkingDay(self):
-        q = "SELECT DAY(DATE) as day, category FROM ep_yearly_calendar WHERE YEAR(DATE) = YEAR(NOW()) AND MONTH(DATE) = '6'"
+        q = "SELECT DAY(DATE) as day, category FROM ep_yearly_calendar WHERE YEAR(DATE) = YEAR(NOW()) AND MONTH(DATE) = MONTH(NOW())"
         result = execute_query(q)
         working_day = []
         hold_day = "0"
@@ -27,6 +27,7 @@ class CommonMethod:
                 if len(working_day) > 0:
                     last_true = working_day[-1]
                 hold_day = str(i['day'])
+        working_day.append("TOTAL")
         return working_day
 
     def TemplateBuilder(self, report_format_constant):

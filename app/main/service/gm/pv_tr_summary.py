@@ -1,9 +1,8 @@
-from . import CommonMethod
-from datetime import datetime
+from ..common import CommonMethod
 
 common = CommonMethod()
 
-class GM_Performance_Setter:
+class PvTrSummary:
     PV_TR_SUMMARY = (
         'Date',
         'Working Days',
@@ -16,11 +15,21 @@ class GM_Performance_Setter:
         'Average Daily',
         'Daily Target To Achieve'
     )
+    TR_SUMMARIZE = (
+        'TR Target',
+        'TR YTD Target',
+        'TR Actual',
+        'TR YTD Actual',
+        'Variance',
+        'YTD Variance'
+    )
 
-class GM_Performance_Update(GM_Performance_Setter):
-
+class PvTrSummaryPerformanceUpdate(PvTrSummary):
     def PVSummary(self):
         return common.TemplateBuilder(self.PV_TR_SUMMARY)
 
     def TRSummary(self):
         return common.TemplateBuilder(self.PV_TR_SUMMARY)
+    
+    def TRSummarize(self):
+        pass 
