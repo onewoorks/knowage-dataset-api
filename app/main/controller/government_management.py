@@ -1,3 +1,5 @@
+import requests
+
 from flask_restplus import Namespace, Resource
 from ..service.gm.contribution_of_pv import ContributionOfPVPerformanceUpdate
 from ..service.gm.pending_payment_cycle import PendingPaymentCyclePerformanceUpdate
@@ -34,15 +36,21 @@ class GM_PVStatus(Resource):
         data = gm_pv_status.PVStatusSummary(ministry)
         return data
 
-@api.route('/pending-payment-cycle/<mode>/', endpoint= "pending-payment-cycle", defaults={ 'mode': 'amount'})
-@api.param('mode',"amount, percentage")
-class GM_PendingPaymentCycle(Resource):
-    def show(self,mode):
-        pass
+# @api.route('/pending-payment-cycle/<mode>/', endpoint= "pending-payment-cycle", defaults={ 'mode': 'amount'})
+# @api.param('mode',"amount, percentage")
+# class GM_PendingPaymentCycle(Resource):
+#     def show(self,mode):
+#         pass
 
-    def get(self, mode):
-        data = gm_pending_payment_cycle.PendingPaymentCycle(mode)
-        return data
+#     def get(self, mode):
+#         data = gm_pending_payment_cycle.PendingPaymentCycle(mode)
+#         return data
+
+@api.route('/pending-payment-cycle')
+class GM_PendingPaymentCycle(Resource):
+    def get(self):
+        data = requests.get('http://192.168.62.138:5155/rest/ep/fl/cycle-pending-payment')
+        return data.json()
 
 @api.route('/contribution-of-pv-by-ptj')
 class GM_ContributionOfPVByPtj(Resource):
