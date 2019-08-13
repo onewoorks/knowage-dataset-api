@@ -30,3 +30,5 @@ class GM_Query:
         query   += "ORDER BY total DESC"
         resp    = execute_query(query)
         return resp
+
+        

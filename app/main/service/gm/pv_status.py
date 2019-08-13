@@ -2,7 +2,6 @@ import collections
 
 from ..common import CommonMethod
 
-
 common = CommonMethod()
 
 class PVStatus: 
