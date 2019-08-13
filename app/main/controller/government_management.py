@@ -60,6 +60,13 @@ class GM_Top100PtjDetails(Resource):
 @api.route('/number-of-ptj-by-location-and-ministry')
 class GM_NumberOfPtjLocationMinistry(Resource):
     def get(self):
-        return {
-            "record": "Number of PTJ Location and Ministry"
-        }
+        query_result = gm_query.get_ministry_location_count()
+        data = gm_pv_status.NumberOFPTJsByLocation(query_result)
+        return data
+
+@api.route('/number-of-ptj-by-ministry')
+class GM_NumberOfPtjByMinistry(Resource):
+    def get(self):
+        query_result = gm_query.get_ministry_no_of_ptj()
+        data = gm_pv_status.NumberOfPtjByMinistry(query_result)
+        return data

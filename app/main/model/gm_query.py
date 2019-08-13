@@ -9,21 +9,24 @@ class GM_Query:
         resp    = execute_query(query)
         return resp
 
-class EpContract:
-    def get_all_contract(self):
-        query = "SELECT * FROM ep_contract LIMIT 10"
-        resp = execute_query(query)
-        for i in resp:
-            i['ct_eff_date'] = i['ct_eff_date'].strftime("%Y-%m-%d")
-            i['ct_exp_date'] = i['ct_exp_date'].strftime("%Y-%m-%d")
-            i['ct_contract_amount'] = str(i['ct_contract_amount'])
+    def get_ministry_location_count(self):
+        query   = "SELECT "
+        query   += "ptj_state_name AS state, "
+        query   += "COUNT(ptj_profile_id) AS no_of_ptj "
+        query   += "FROM ep_org_profile_ptj "
+        query   += "WHERE ptj_state_name != 'N/A' "
+        query   += "GROUP BY ptj_state_code " 
+        resp    = execute_query(query)
         return resp
 
-    def get_contract_information(self, contract_id):
-        query = "SELECT * FROM ep_contract  WHERE ct_contract_id = {} LIMIT 20".format(contract_id)
-        resp = execute_query(query)
-        for i in resp:
-            i['ct_eff_date'] = i['ct_eff_date'].strftime("%Y-%m-%d")
-            i['ct_exp_date'] = i['ct_exp_date'].strftime("%Y-%m-%d")
-            i['ct_contract_amount'] = str(i['ct_contract_amount'])
+    def get_ministry_no_of_ptj(self):
+        query   = "SELECT "
+        query   += "kementerian_name, "
+        query   += "COUNT(ptj_profile_id) AS total "
+        query   += "FROM "
+        query   += "ep_org_profile_ptj "
+        query   += "WHERE kementerian_name != 'DUMMY' "
+        query   += "GROUP BY kementerian_name "
+        query   += "ORDER BY total DESC"
+        resp    = execute_query(query)
         return resp
