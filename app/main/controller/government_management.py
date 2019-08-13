@@ -50,7 +50,7 @@ class GM_PVStatus(Resource):
 class GM_PendingPaymentCycle(Resource):
     def get(self):
         data = requests.get('http://192.168.62.138:5155/rest/ep/fl/cycle-pending-payment')
-        return data.json()
+        return gm_pending_payment_cycle.PendingPaymentCycleMilFix(data.json())
 
 @api.route('/contribution-of-pv-by-ptj')
 class GM_ContributionOfPVByPtj(Resource):

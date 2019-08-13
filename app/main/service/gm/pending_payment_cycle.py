@@ -187,3 +187,20 @@ class PendingPaymentCyclePerformanceUpdate(PendingPaymentCycle):
     def PendingPaymentCycle(self,mode):
         print(mode)
         return self.TemplateCycleBuilder(self.SAMPLE_PENDING_PAYMENT)
+
+    def PendingPaymentCycleMilFix(self, returned_data):
+        fixData = []
+        for i in returned_data[1:]:
+            inn = self.ConvertValue(i)
+            fixData.append(inn)
+        return fixData
+
+    def ConvertValue(self,dict_values):
+        clean = {}
+        for i in dict_values:
+            clean[i] = str (dict_values[i])
+        return clean
+
+
+
+            
