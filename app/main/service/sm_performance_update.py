@@ -94,3 +94,26 @@ class SM_Performance_Update(SM_Performance_Setter):
             }
         }]
         return dashboard
+
+    def SMDashboardSummary(self):
+        dashboard = [
+            {
+                "category":"MOF REGISTRATION",
+                "target": 2010000,
+                "actual": 1020000,
+                "variance": 990000
+            },
+            {
+                "category": "TRAINING",
+                "target":359000,
+                "actual": 141000,
+                "variance": 218000
+            },
+            {
+                "category":"SOFT CERT",
+                "target":"",
+                "actual":8760,
+                "variance":"" 
+            }
+        ]
+        return dashboard
