@@ -2,6 +2,7 @@ from . import CommonMethod
 
 common = CommonMethod()
 
+
 class SM_Performance_Setter:
     SOFTCERT_SUMMARY = (
         'Date',
@@ -54,3 +55,42 @@ class SM_Performance_Update(SM_Performance_Setter):
 
     def SupplierRevenueSummaryTraining(self):
         return common.TemplateBuilder(self.SUPPLIER_REVENUE_SUMMARY_TRAINING)
+
+    def SMDashboard(self):
+        dashboard = {
+            "monthly": {
+                "mof_registration": {
+                    "target": 2010000,
+                    "actual": 1020000,
+                    "variance": 990000
+                },
+                "training":{
+                    "target":359000,
+                    "actual": 141000,
+                    "variance": 218000
+                },
+                "soft_cert":{
+                    "target":"",
+                    "actual":8760,
+                    "variance":""
+                }
+            },
+            "year_to_date": {
+                "mof_registration": {
+                    "target": 11360000,
+                    "actual": 10490000,
+                    "variance": 870000
+                },
+                "training":{
+                    "target":1690000,
+                    "actual":1020000,
+                    "variance":670000
+                },
+                "soft_cert":{
+                    "target":"",
+                    "actual":78840,
+                    "variance":""
+                }
+            }
+        }
+        return dashboard
