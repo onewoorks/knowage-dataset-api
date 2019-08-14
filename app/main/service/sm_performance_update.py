@@ -57,7 +57,7 @@ class SM_Performance_Update(SM_Performance_Setter):
         return common.TemplateBuilder(self.SUPPLIER_REVENUE_SUMMARY_TRAINING)
 
     def SMDashboard(self):
-        dashboard = {
+        dashboard = [{
             "monthly": {
                 "mof_registration": {
                     "target": 2010000,
@@ -92,5 +92,5 @@ class SM_Performance_Update(SM_Performance_Setter):
                     "variance":""
                 }
             }
-        }
+        }]
         return dashboard
