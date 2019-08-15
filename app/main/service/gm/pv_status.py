@@ -61,25 +61,40 @@ class PVStatusPerformanceUpdate(PVStatus):
         data = []
         kv = {
             'zone':'kv',
-            "states": {}
+            'rows':[]
         }
         okv = {
             'zone':'okv',
-            "states": {}
+            'rows':[]
         }
         em = {
             'zone':'em',
-            "states": {}
+            'rows':[]
         }
+
         for i in query_result:
             if i['state'] in self.MINISTY_LOCATION[0]['state']:
-                kv['states'][i['state']] = i['no_of_ptj']
-
+                d = {
+                    "zone":"kv",
+                    "state": i['state'],
+                    "no_of_ptj": i['no_of_ptj']
+                }
+                kv['rows'].append(d)
             if i['state'] in self.MINISTY_LOCATION[1]['state']:
-                okv['states'][i['state']] = i['no_of_ptj']
+                d = {
+                    "zone":"kv",
+                    "state": i['state'],
+                    "no_of_ptj": i['no_of_ptj']
+                }
+                okv['rows'].append(d)
             
             if i['state'] in self.MINISTY_LOCATION[2]['state']:
-                em['states'][i['state']] = i['no_of_ptj']
+                d = {
+                    "zone":"kv",
+                    "state": i['state'],
+                    "no_of_ptj": i['no_of_ptj']
+                }
+                em['rows'].append(d)
 
         data = [kv,okv,em]
         return data
