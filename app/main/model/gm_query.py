@@ -31,4 +31,11 @@ class GM_Query:
         resp    = execute_query(query)
         return resp
 
-        
+    def get_working_days(self):
+        query   = "SELECT DAY(DATE) as day, "
+        query   += "category "
+        query   += "FROM ep_yearly_calendar "
+        # query   += "WHERE YEAR(DATE) = YEAR(NOW()) AND MONTH(DATE) = MONTH(NOW())"
+        query   += "WHERE YEAR(DATE) = YEAR(NOW()) AND MONTH(DATE) = '7' "
+        resp    = execute_query(query)
+        return resp

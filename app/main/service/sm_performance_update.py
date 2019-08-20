@@ -1,7 +1,8 @@
-from . import CommonMethod
+from .common import CommonMethod
+from ..model.sm_query import SM_Query
 
 common = CommonMethod()
-
+sm_query = SM_Query()
 
 class SM_Performance_Setter:
     SOFTCERT_SUMMARY = (
@@ -47,8 +48,39 @@ class SM_Performance_Setter:
 
 class SM_Performance_Update(SM_Performance_Setter):
 
+    def content_builder(self,topic, arrayData):
+        content = {' topic': topic}
+        no = 97
+        for i in arrayData:
+            cur_no = chr(no)
+            content[cur_no] = str(round(i['total']/100))
+            no += 1
+        
+        return content
+
+    def dailySupplierRevenueMOF(self):
+        working_days = common.GetWorkingDay()
+        target_new = self.content_builder('Target New', sm_query.union_supplier_revenue(working_days,'TARGET_NEW_SUPPLIER_WORKING_DAY'))
+        print(target_new)
+
+        target_renew =  self.content_builder('Target Renew', sm_query.union_supplier_revenue(working_days,'TARGET_RENEW_SUPPLIER_WORKING_DAY'))
+        print(target_renew)
+        
+        dataset = []
+        
+        for i in self.SUPPLIER_REVENUE_SUMMARY_MOF_REGISTRATION[1:]:
+            content = { " topic": i}
+            no = 97
+            for c in working_days:
+                cur_no = chr(no)
+                content[cur_no] = c
+                no += 1
+            dataset.append(content)
+        return dataset
+
     def SupplierRevenueSummary(self):
-        return common.TemplateBuilder(self.SUPPLIER_REVENUE_SUMMARY_MOF_REGISTRATION)
+        dataset = self.dailySupplierRevenueMOF()
+        return common.TemplateBuilder(self.SUPPLIER_REVENUE_SUMMARY_MOF_REGISTRATION, dataset)
 
     def SoftCertSummary(self):
         return common.TemplateBuilder(self.SOFTCERT_SUMMARY)

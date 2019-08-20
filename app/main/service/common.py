@@ -1,4 +1,7 @@
 from ..model import execute_query
+from ..model.gm_query import GM_Query
+
+gm_query = GM_Query()
 
 class CommonMethod:
     def GetMonthName(self, month_int):
@@ -6,8 +9,7 @@ class CommonMethod:
         return month_name[month_int-1]
 
     def GetWorkingDay(self):
-        q = "SELECT DAY(DATE) as day, category FROM ep_yearly_calendar WHERE YEAR(DATE) = YEAR(NOW()) AND MONTH(DATE) = MONTH(NOW())"
-        result = execute_query(q)
+        result = gm_query.get_working_days()
         working_day = []
         hold_day = "0"
         last_true = ""
@@ -30,18 +32,19 @@ class CommonMethod:
         working_day.append("TOTAL")
         return working_day
 
-    def TemplateBuilder(self, report_format_constant):
-            data_out = []
-            working_day = self.GetWorkingDay()
-            for i in report_format_constant:
-                content = {" topic": i}
-                no = 97
-                for w in working_day:
-                    cur_no = chr(no)
-                    val = ""
-                    if i == 'Date':
-                        val = w
-                    content[cur_no] = val
-                    no = no + 1
-                data_out.append(content)
-            return data_out
+    def TemplateBuilder(self, report_format_constant, dataset = {}):
+        data_out = []
+        working_day = self.GetWorkingDay()
+        for i in report_format_constant:
+            content = {" topic": i}
+            no = 97
+            for w in working_day:
+                cur_no = chr(no)
+                if i == 'Date':
+                    val = w
+                else:
+                    val = 0
+                content[cur_no] = val
+                no = no + 1
+            data_out.append(content)
+        return data_out
