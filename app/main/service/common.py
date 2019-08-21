@@ -1,4 +1,4 @@
-from ..model import execute_query
+from ..model import execute_query, insert_ws_data
 from ..model.gm_query import GM_Query
 
 gm_query = GM_Query()
@@ -47,4 +47,10 @@ class CommonMethod:
                 content[cur_no] = val
                 no = no + 1
             data_out.append(content)
+        return data_out
+    
+    def TemplateBuilderData(self, dataset = {}):
+        data_out = []
+        for i in dataset:
+            data_out.append(i)
         return data_out
