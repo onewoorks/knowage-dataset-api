@@ -10,6 +10,12 @@ class SupplierRevenueSummary(Resource):
         data = sm_pu.SupplierRevenueSummary()
         return data
 
+@api.route('/supplier-revenue-summary/mof-registration-pivot')
+class SupplierRevenueSummaryPivot(Resource):
+    def get(self):
+        data = sm_pu.SupplierRevenueSummaryPivot()
+        return data
+
 @api.route('/supplier-revenue-summary/training')
 class SRS_Training(Resource):
     def get(self):

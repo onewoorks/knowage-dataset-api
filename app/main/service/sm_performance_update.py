@@ -190,6 +190,41 @@ class SM_Performance_Update(SM_Performance_Setter):
         common_query.register_ws(input)
         return dataset
 
+    def SupplierRevenueSummaryPivot(self):
+        ws_name = "MOF_REGISTRATION"
+        existed = sm_query.get_today_ws_name(ws_name,str(date.today()))
+        if len(existed) > 0:
+            dataset = json.loads(existed[0]['ws_data'])
+        else:
+            dataset = self.createMOFRegistrationDataset()
+        return self.MofRegistrationPivot(dataset)
+
+    def MofRegistrationPivot(self,dataset):
+        pivot = [
+            {
+                "date": "1",
+                "total daily target": "111",
+                "total daily actual": "90",
+                "total cummulative Target": "111",
+                "total commulative Actual":"90"
+            },
+            {
+                "date": "2",
+                "total daily target": "134",
+                "total daily actual": "121",
+                "total cummulative Target": "211",
+                "total commulative Actual":"190"
+            },
+            {
+                "date": "3",
+                "total daily target": "81",
+                "total daily actual": "60",
+                "total cummulative Target": "311",
+                "total commulative Actual":"290"
+            }
+        ]
+        return pivot
+
     def SupplierRevenueSummary(self):
         ws_name = "MOF_REGISTRATION"
         existed = sm_query.get_today_ws_name(ws_name,str(date.today()))
