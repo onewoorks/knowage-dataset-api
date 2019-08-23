@@ -246,9 +246,10 @@ class SM_Performance_Update(SM_Performance_Setter):
                 days.append(d)
 
         pivot_data = []
+        no = 100
         for i in days:
             content = {
-                "No": i,
+                "No": no,
                 "Date": column_date[i],
                 "Total Daily Target": total_daily_target[i],
                 "Total Commulative Target": total_commulative_target[i],
@@ -256,6 +257,7 @@ class SM_Performance_Update(SM_Performance_Setter):
                 "Total Commulative Actual" : total_commulative_actual[i]
             }
             pivot_data.append(content)
+            no += 1
         return pivot_data
 
     def SupplierRevenueSummary(self):
