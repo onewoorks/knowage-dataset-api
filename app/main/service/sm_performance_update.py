@@ -149,7 +149,7 @@ class SM_Performance_Update(SM_Performance_Setter):
         total_daily_target = self.total_daily(
             'total', 'Total Daily Target', working_days[:-1], target_new, target_renew)
         total_commulative_target = self.total_commulative(
-            'commulative', 'Total Commulative', working_days[:-1], target_new, target_renew)
+            'commulative', 'Total Commulative Target', working_days[:-1], target_new, target_renew)
         actual_new = self.content_builder(
             'Actual New', sm_query.ora_actual_supplier_revenue(working_days[:-1], 'N'), 1)
         actual_renew = self.content_builder(
@@ -232,8 +232,8 @@ class SM_Performance_Update(SM_Performance_Setter):
             if b[' topic'] == "Total Daily Target":
                 total_daily_target = self.pivot_construct(b)
 
-            if b[' topic'] == "Total Commulative":
-                total_commulative = self.pivot_construct(b)
+            if b[' topic'] == "Total Commulative Target":
+                total_commulative_target = self.pivot_construct(b)
 
             if b[' topic'] == "Total Daily Actual":
                 total_daily_actual = self.pivot_construct(b)
@@ -250,7 +250,7 @@ class SM_Performance_Update(SM_Performance_Setter):
             content = {
                 "Date": column_date[i],
                 "Total Daily Target": total_daily_target[i],
-                "Total Commulative": total_commulative[i],
+                "Total Commulative Target": total_commulative_target[i],
                 "Total Daily Actual": total_daily_actual[i],
                 "Total Commulative Actual" : total_commulative_actual[i]
             }
