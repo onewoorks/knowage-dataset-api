@@ -248,6 +248,7 @@ class SM_Performance_Update(SM_Performance_Setter):
         pivot_data = []
         for i in days:
             content = {
+                "No": i,
                 "Date": column_date[i],
                 "Total Daily Target": total_daily_target[i],
                 "Total Commulative Target": total_commulative_target[i],
