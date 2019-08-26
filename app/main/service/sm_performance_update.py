@@ -218,7 +218,7 @@ class SM_Performance_Update(SM_Performance_Setter):
             "ws_status": "SUCCESS",
             "ws_error": ""
         }
-        # common_query.register_ws(input)
+        common_query.register_ws(input)
         return dataset
 
     def SupplierRevenueSummaryPivot(self):
