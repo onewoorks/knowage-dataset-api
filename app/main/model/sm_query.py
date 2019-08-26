@@ -1,5 +1,7 @@
 from . import execute_query, execute_oracle_query, insert_ws_data
 
+from datetime import date, datetime
+
 class SM_Query:
     def valid_date_group(self,array_data):
         valid_date = []
@@ -23,7 +25,8 @@ class SM_Query:
         return resp
     
     def union_supplier_revenue(self, working_day, target):
-        print("perform target supplier revenue")
+        month = datetime.now().month
+        print("perform target supplier revenue (mysql) => {}".format(target))
         query = ""
         count = 0
         self.valid_date_group(working_day)
@@ -33,15 +36,16 @@ class SM_Query:
             if i != "TOTAL":
                 if '-' in i:
                     day = i.split('-')
-                    query   += "(SELECT '{}' AS 'date', amount AS total FROM ep_ref_target_daily WHERE YEAR = YEAR(now()) AND MONTH='7' AND DAY BETWEEN '{}' AND '{}' AND code_name IN ('{}') AND module = 'SM' GROUP BY group_day) ".format(i,day[0],day[1],target)
+                    query   += "(SELECT '{}' AS 'date', amount AS total FROM ep_ref_target_daily WHERE YEAR = YEAR(now()) AND MONTH='{}' AND DAY BETWEEN '{}' AND '{}' AND code_name IN ('{}') AND module = 'SM' GROUP BY group_day) ".format(i,month,day[0],day[1],target)
                 else:
-                    query   += "(SELECT '{}' AS 'date', amount AS total FROM ep_ref_target_daily WHERE YEAR = YEAR(now()) AND MONTH='7' AND DAY = '{}' AND code_name IN ('{}') AND module = 'SM' GROUP BY group_day) ".format(i,i,target)    
+                    query   += "(SELECT '{}' AS 'date', amount AS total FROM ep_ref_target_daily WHERE YEAR = YEAR(now()) AND MONTH='{}' AND DAY = '{}' AND code_name IN ('{}') AND module = 'SM' GROUP BY group_day) ".format(i,month,i,target)    
                 count += 1
         resp    = execute_query(query)
         return resp
         
     def ora_actual_supplier_revenue(self,working_days,appl_type):
-        print("perform actual supplier revenue")
+        this_month = date.today().strftime("%Y-%m")
+        print("perform actual supplier revenue (oracle) => {}".format(appl_type))
         query = ""
         count = 1
         for i in working_days:
@@ -64,10 +68,10 @@ class SM_Query:
                 day = i.split('-')
                 day_start = day[0].zfill(2)
                 day_end = day[1].zfill(2)
-                query += "  AND to_char(a.eff_date, 'YYYY-MM-DD') >= '2019-07-{}'".format(day_start)
-                query += "  AND to_char(a.eff_date, 'YYYY-MM-DD') <= '2019-07-{}'".format(day_end)
+                query += "  AND to_char(a.eff_date, 'YYYY-MM-DD') >= '{}-{}'".format(this_month,day_start)
+                query += "  AND to_char(a.eff_date, 'YYYY-MM-DD') <= '{}-{}'".format(this_month,day_end)
             else:
-                query += "  AND to_char(a.eff_date, 'YYYY-MM-DD') = '2019-07-{}'".format(i.zfill(2))
+                query += "  AND to_char(a.eff_date, 'YYYY-MM-DD') = '{}-{}'".format(this_month,i.zfill(2))
             query += "  AND a.is_bumi_cert = 0"
             query += "  AND b.appl_type IN ('{}')".format(appl_type)
             query += "  AND d.PAYMENT_AMT = '400'"

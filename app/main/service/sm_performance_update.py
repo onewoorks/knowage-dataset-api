@@ -91,8 +91,10 @@ class SM_Performance_Update(SM_Performance_Setter):
         no = self.START_NO
         for i in working_days:
             if "null-" not in i:
-                calc = target_new[no] + target_renew[no]
-                content[no] = int(calc)
+                tn = target_new[no] if target_new[no] != "" else 0
+                tr = target_renew[no] if target_renew[no] != "" else 0
+                calc = tn + tr
+                content[no] = int(calc) if calc > 0 else ""
             else:
                 content[no] = ""
             no += 1
@@ -104,7 +106,10 @@ class SM_Performance_Update(SM_Performance_Setter):
         commulative = 0
         for i in working_days:
             if "null-" not in i:
-                commulative = int(commulative) + int(target_new[no]) + int(target_renew[no])
+                tn = target_new[no] if target_new[no] != "" else 0
+                tr = target_renew[no] if target_renew[no] != "" else 0
+                calc = tn + tr
+                commulative = (int(commulative) + int(calc)) if calc != 0 else ""
                 content[no] = commulative
             else:
                 content[no] = ""
@@ -116,7 +121,9 @@ class SM_Performance_Update(SM_Performance_Setter):
         no = self.START_NO
         for i in working_days:
             if "null-" not in i:
-                variance = int(actual_new[no]) - int(target_new[no])
+                tn = target_new[no] if target_new[no] != "" else 0
+                a_n = actual_new[no] if actual_new[no] != "" else 0
+                variance = (int(a_n) - int(tn)) if actual_new[no] != "" else ""
                 content[no] = variance
             else:
                 content[no] = ""
@@ -142,7 +149,10 @@ class SM_Performance_Update(SM_Performance_Setter):
         no = self.START_NO
         for i in working_days:
             if "null-" not in i:
-                variance = int(variance_new[no]) + int(variance_renew[no])
+                v_n = variance_new[no] if variance_new[no] != "" else 0
+                v_r = variance_renew[no] if variance_renew[no] != "" else 0
+                calc = int(v_n) + int(v_r)
+                variance = calc if calc != 0 else ""
                 content[no] = variance
             else:
                 content[no] = ""
@@ -155,8 +165,10 @@ class SM_Performance_Update(SM_Performance_Setter):
         commulative = 0
         for i in working_days:
             if "null-" not in i:
-                commulative = int(
-                    commulative) + int(variance_new[no]) + int(variance_renew[no])
+                v_n = variance_new[no] if variance_new[no] != "" else 0
+                v_r = variance_renew[no] if variance_renew[no] != "" else 0
+                calc = v_n + v_r
+                commulative = int(commulative) + int(calc) if calc != 0 else ""
                 content[no] = commulative
             else:
                 content[no] = ""
@@ -176,10 +188,8 @@ class SM_Performance_Update(SM_Performance_Setter):
         total_commulative_actual = self.total_commulative('commulative', 'Total Commulative Actual', working_days, actual_new, actual_renew)
         variance_new = self.variance('Variance New', working_days, actual_new, target_new)
         variance_renew = self.variance('Variance Renew', working_days, actual_renew, target_renew)
-        total_daily_variance = self.total_variance(
-            'Total Daily Variance', working_days, variance_new, variance_renew)
-        total_commulative_variance = self.total_commulative_variance(
-            'commulative', 'Total Commulative Variance', working_days, variance_new, variance_renew)
+        total_daily_variance = self.total_variance('Total Daily Variance', working_days, variance_new, variance_renew)
+        total_commulative_variance = self.total_commulative_variance('commulative', 'Total Commulative Variance', working_days, variance_new, variance_renew)
         dataset = [
             date,
             target_new,
@@ -262,14 +272,15 @@ class SM_Performance_Update(SM_Performance_Setter):
         pivot_data = []
         no = self.START_NO
         for i in days:
-            content = {
-                "No": no,
-                "Date": column_date[i],
-                "Total Daily Target": total_daily_target[i],
-                # "Total Commulative Target": total_commulative_target[i],
-                # "Total Daily Actual": total_daily_actual[i],
-                # "Total Commulative Actual" : total_commulative_actual[i]
-            }
+            if "null-" not in column_date[i]:
+                content = {
+                    "No": no,
+                    "Date": column_date[i],
+                    "Total Daily Target": total_daily_target[i],
+                    "Total Commulative Target": total_commulative_target[i],
+                    "Total Daily Actual": total_daily_actual[i],
+                    "Total Commulative Actual" : total_commulative_actual[i]
+                }
             pivot_data.append(content)
             no += 1
         return pivot_data

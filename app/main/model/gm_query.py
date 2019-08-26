@@ -1,5 +1,7 @@
 from . import execute_query
 
+from datetime import datetime
+
 class GM_Query:
     def get_pv_status(self):
         query   = "SELECT kementerian_name " 
@@ -35,7 +37,6 @@ class GM_Query:
         query   = "SELECT DAY(DATE) as day, "
         query   += "category "
         query   += "FROM ep_yearly_calendar "
-        # query   += "WHERE YEAR(DATE) = YEAR(NOW()) AND MONTH(DATE) = MONTH(NOW())"
-        query   += "WHERE YEAR(DATE) = YEAR(NOW()) AND MONTH(DATE) = '7' "
+        query   += "WHERE YEAR(DATE) = YEAR(NOW()) AND MONTH(DATE) = MONTH(NOW())"
         resp    = execute_query(query)
         return resp
