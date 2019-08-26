@@ -274,14 +274,14 @@ class SM_Performance_Update(SM_Performance_Setter):
         for i in days:
             if "null-" not in column_date[i]:
                 content = {
-                    "No": no,
+                    "No": int(no),
                     "Date": column_date[i],
-                    "Total Daily Target": total_daily_target[i],
-                    "Total Commulative Target": total_commulative_target[i],
+                    "Total Daily Target": total_daily_target[i] if total_daily_actual[i] != "" else "",
+                    "Total Commulative Target": total_commulative_target[i] if total_daily_actual[i] != "" else "",
                     "Total Daily Actual": total_daily_actual[i],
                     "Total Commulative Actual" : total_commulative_actual[i]
                 }
-            pivot_data.append(content)
+                pivot_data.append(content)
             no += 1
         return pivot_data
 
