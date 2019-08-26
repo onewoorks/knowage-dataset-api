@@ -1,6 +1,13 @@
 from . import execute_query, execute_oracle_query, insert_ws_data
 
 class SM_Query:
+    def valid_date_group(self,array_data):
+        valid_date = []
+        for i in array_data:
+            if "null-" not in i:
+                valid_date.append(i)
+        return valid_date
+
     def get_pv_status(self):
         query   = "SELECT kementerian_name " 
         query   += "FROM ep_org_profile_ptj "
@@ -19,7 +26,8 @@ class SM_Query:
         print("perform target supplier revenue")
         query = ""
         count = 0
-        for i in working_day[:-1]:
+        self.valid_date_group(working_day)
+        for i in self.valid_date_group(working_day):
             if count > 0:
                 query   += "UNION ALL "
             if i != "TOTAL":
