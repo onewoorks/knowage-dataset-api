@@ -47,7 +47,8 @@ class SM_Query:
         year = datetime.now().year if current_year == 'now' else current_year
         month = datetime.now().month if current_year == 'now' else current_month
         query = "SELECT code_name, amount FROM ep_ref_target "
-        query += "WHERE year='{}'".format(year)
+        query += "WHERE `group`='{}' ".format(module.upper())
+        query += "AND year='{}'".format(year)
         query += "AND month='{}'".format(month)
         resp = execute_query(query)
         return resp

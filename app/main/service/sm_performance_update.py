@@ -4,12 +4,13 @@ from datetime import date, datetime
 
 from .common import CommonMethod
 from ..model.sm_query import SM_Query
+from ..model.oracle.supplier_management import ORACLE_SM_QUERY
 from ..model.common import Common_Query
 
 common = CommonMethod()
 sm_query = SM_Query()
+oracle_sm_query = ORACLE_SM_QUERY()
 common_query = Common_Query()
-
 
 class SM_Performance_Setter:
     SOFTCERT_SUMMARY = (
@@ -63,7 +64,6 @@ class SM_Performance_Update(SM_Performance_Setter):
             empty_column.append("")
             cur_columns += 1
         return empty_column
-
 
     def date_column(self, working_days):
         content = {'100': 'Date'}
@@ -344,16 +344,29 @@ class SM_Performance_Update(SM_Performance_Setter):
         result = 100
         if diff > 0:
             result = (diff/target)*100
+        result = 100 - result
         return result
 
     def PerformanceMofRegistration(self):
-        result = sm_query.mysql_module_target('MOF_REGISTRATION')
-        target = {}
+        target = sm_query.mysql_module_target('MOF')
+        actual = oracle_sm_query.actual_mof_registration()
+        indicator = {}
         year = datetime.now().year
-        for i in result:
+        for i in target:
             code_name = i['code_name'].replace('_{}'.format(year),'')
-            target[code_name] = float(i['amount'])
-        return target
+            indicator[code_name] = float(i['amount'])
+        actual_sr = 0
+        for a in actual:
+            if a['APPLICATION_TYPE'] == 'N':
+                indicator['ACTUAL_NEW_SUPPLIER'] = a['AMOUNT']
+            if a['APPLICATION_TYPE'] == 'R':
+                indicator['ACTUAL_RENEW_SUPPLIER'] = a['AMOUNT']
+            actual_sr += a['AMOUNT']
+        indicator['ACTUAL_SR'] = actual_sr
+        indicator['ACTUAL_NEW_PERCENTAGE'] = self.CalculateActualPercentage(indicator['TARGET_NEW_SUPPLIER'], indicator['ACTUAL_NEW_SUPPLIER'])
+        indicator['ACTUAL_RENEW_PERCENTAGE'] = self.CalculateActualPercentage(indicator['TARGET_RENEW_SUPPLIER'], indicator['ACTUAL_RENEW_SUPPLIER'])
+        indicator['ACTUAL_MOF_PERCENTAGE'] = self.CalculateActualPercentage(indicator['TARGET_SR'], indicator['ACTUAL_SR'])
+        return indicator
 
     def SMDashboardSummary(self, module = "all"):
         if module.lower() == "mof_registration":
