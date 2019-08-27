@@ -52,6 +52,20 @@ class SM_Query:
         query += "AND month='{}'".format(month)
         resp = execute_query(query)
         return resp
+
+    def mysql_module_ytd_target(self, module, current_year = 'now', current_month = "now", current_day = "now"):
+        year = datetime.now().year if current_year == 'now' else current_year
+        month = datetime.now().month if current_month == 'now' else current_month
+        day = datetime.now().month if current_day == 'now' else current_day
+        query = "SELECT code_name, sum(amount) as ytd_target "
+        query += "FROM ep_ref_target_daily "
+        query += "WHERE `group`='{}' ".format(module)
+        query += "AND year='{}' ".format(year)
+        query += "AND month='{}' ".format(month) 
+        query += "AND DAY <= '{}' ".format(day)
+        query += "GROUP BY code_name"
+        resp = execute_query(query)
+        return resp
         
     def ora_actual_supplier_revenue(self,working_days,appl_type):
         this_month = date.today().strftime("%Y-%m")

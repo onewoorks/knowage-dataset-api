@@ -350,6 +350,7 @@ class SM_Performance_Update(SM_Performance_Setter):
     def PerformanceMofRegistration(self):
         target = sm_query.mysql_module_target('MOF')
         actual = oracle_sm_query.actual_mof_registration()
+        ytd_target = sm_query.mysql_module_ytd_target('MOF')
         ytd = oracle_sm_query.ytd_mof_registration()
         indicator = {}
         year = datetime.now().year
@@ -368,11 +369,14 @@ class SM_Performance_Update(SM_Performance_Setter):
         indicator['ACTUAL_NEW_PERCENTAGE'] = self.CalculateActualPercentage(indicator['TARGET_NEW_SUPPLIER'], indicator['ACTUAL_NEW_SUPPLIER'])
         indicator['ACTUAL_RENEW_PERCENTAGE'] = self.CalculateActualPercentage(indicator['TARGET_RENEW_SUPPLIER'], indicator['ACTUAL_RENEW_SUPPLIER'])
         indicator['ACTUAL_MOF_PERCENTAGE'] = self.CalculateActualPercentage(indicator['TARGET_SR'], indicator['ACTUAL_SR'])
+        for yt in ytd_target:
+            code_name = yt['code_name'].replace('_SUPPLIER_WORKING_DAY','') + '_YTD'
+            indicator[code_name] = float(yt['ytd_target'])
         for y in ytd:
             if y['APPLICATION_TYPE'] == "N":
-                indicator['YTD_NEW'] = y['AMOUNT']
+                indicator['ACTUAL_NEW_YTD'] = y['AMOUNT']
             if y['APPLICATION_TYPE'] == "R":
-                indicator['YTD_ACTUAL'] = y['AMOUNT']
+                indicator['ACTUAL_RENEW_YTD'] = y['AMOUNT']
         return indicator
 
     def SMDashboardSummary(self, module = 'all'):
