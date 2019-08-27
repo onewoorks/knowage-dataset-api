@@ -352,6 +352,7 @@ class SM_Performance_Update(SM_Performance_Setter):
         actual = oracle_sm_query.actual_mof_registration()
         indicator = {}
         year = datetime.now().year
+        indicator["GROUP_NAME"] = "MOF REGISTRATION"
         for i in target:
             code_name = i['code_name'].replace('_{}'.format(year),'')
             indicator[code_name] = float(i['amount'])
@@ -368,10 +369,11 @@ class SM_Performance_Update(SM_Performance_Setter):
         indicator['ACTUAL_MOF_PERCENTAGE'] = self.CalculateActualPercentage(indicator['TARGET_SR'], indicator['ACTUAL_SR'])
         return indicator
 
-    def SMDashboardSummary(self, module = "all"):
-        if module.lower() == "mof_registration":
+    def SMDashboardSummary(self, module = 'all'):
+        print(module)
+        if module == "mof_registration":
             data = self.PerformanceMofRegistration()
-        if module.lower() == "all":
+        if module == None:
             data = [
                 {
                     "category": "MOF REGISTRATION",
