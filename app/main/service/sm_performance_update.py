@@ -350,6 +350,7 @@ class SM_Performance_Update(SM_Performance_Setter):
     def PerformanceMofRegistration(self):
         target = sm_query.mysql_module_target('MOF')
         actual = oracle_sm_query.actual_mof_registration()
+        ytd = oracle_sm_query.ytd_mof_registration()
         indicator = {}
         year = datetime.now().year
         indicator["GROUP_NAME"] = "MOF REGISTRATION"
@@ -367,6 +368,11 @@ class SM_Performance_Update(SM_Performance_Setter):
         indicator['ACTUAL_NEW_PERCENTAGE'] = self.CalculateActualPercentage(indicator['TARGET_NEW_SUPPLIER'], indicator['ACTUAL_NEW_SUPPLIER'])
         indicator['ACTUAL_RENEW_PERCENTAGE'] = self.CalculateActualPercentage(indicator['TARGET_RENEW_SUPPLIER'], indicator['ACTUAL_RENEW_SUPPLIER'])
         indicator['ACTUAL_MOF_PERCENTAGE'] = self.CalculateActualPercentage(indicator['TARGET_SR'], indicator['ACTUAL_SR'])
+        for y in ytd:
+            if y['APPLICATION_TYPE'] == "N":
+                indicator['YTD_NEW'] = y['AMOUNT']
+            if y['APPLICATION_TYPE'] == "R":
+                indicator['YTD_ACTUAL'] = y['AMOUNT']
         return indicator
 
     def SMDashboardSummary(self, module = 'all'):
