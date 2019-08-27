@@ -42,6 +42,15 @@ class SM_Query:
                 count += 1
         resp    = execute_query(query)
         return resp
+
+    def mysql_module_target(self, module, current_year = 'now', current_month = 'now'):
+        year = datetime.now().year if current_year == 'now' else current_year
+        month = datetime.now().month if current_year == 'now' else current_month
+        query = "SELECT code_name, amount FROM ep_ref_target "
+        query += "WHERE year='{}'".format(year)
+        query += "AND month='{}'".format(month)
+        resp = execute_query(query)
+        return resp
         
     def ora_actual_supplier_revenue(self,working_days,appl_type):
         this_month = date.today().strftime("%Y-%m")

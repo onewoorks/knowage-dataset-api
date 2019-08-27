@@ -346,28 +346,40 @@ class SM_Performance_Update(SM_Performance_Setter):
             result = (diff/target)*100
         return result
 
-    def SMDashboardSummary(self):
-        dashboard = [
-            {
-                "category": "MOF REGISTRATION",
-                "target": 2010000,
-                "actual": 1020000,
-                "variance": 990000,
-                "actual_percentage": self.CalculateActualPercentage(target=2010000, actual=1020000)
-            },
-            {
-                "category": "TRAINING",
-                "target": 359000,
-                "actual": 141000,
-                "variance": 218000,
-                "actual_percentage": self.CalculateActualPercentage(target=359000, actual=141000)
-            },
-            {
-                "category": "SOFT CERT",
-                "target": 0,
-                "actual": 8760,
-                "variance": "",
-                "actual_percentage": self.CalculateActualPercentage(target=0, actual=8760)
-            }
-        ]
-        return dashboard
+    def PerformanceMofRegistration(self):
+        result = sm_query.mysql_module_target('MOF_REGISTRATION')
+        target = {}
+        year = datetime.now().year
+        for i in result:
+            code_name = i['code_name'].replace('_{}'.format(year),'')
+            target[code_name] = float(i['amount'])
+        return target
+
+    def SMDashboardSummary(self, module = "all"):
+        if module.lower() == "mof_registration":
+            data = self.PerformanceMofRegistration()
+        if module.lower() == "all":
+            data = [
+                {
+                    "category": "MOF REGISTRATION",
+                    "target": 2010000,
+                    "actual": 1020000,
+                    "variance": 990000,
+                    "actual_percentage": self.CalculateActualPercentage(target=2010000, actual=1020000)
+                },
+                {
+                    "category": "TRAINING",
+                    "target": 359000,
+                    "actual": 141000,
+                    "variance": 218000,
+                    "actual_percentage": self.CalculateActualPercentage(target=359000, actual=141000)
+                },
+                {
+                    "category": "SOFT CERT",
+                    "target": 0,
+                    "actual": 8760,
+                    "variance": "",
+                    "actual_percentage": self.CalculateActualPercentage(target=0, actual=8760)
+                }
+            ]
+        return data

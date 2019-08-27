@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask_restplus import Namespace, Resource
 from ..service.sm_performance_update import SM_Performance_Update
 api = Namespace('SM', 'Summary dataset of performance update for Supplier Management')
@@ -35,8 +37,14 @@ class SRS_RegistrationRenewalConversionPerformance(Resource):
             "record":"Renewal Conversion Performance summary"
         }
     
-@api.route('/dashboard-summary')
+@api.route('/dashboard-summary/')
 class DashboardSummary(Resource):
-    def get(self):
-        data = sm_pu.SMDashboardSummary()
+    def get(self, module = None):
+        data = sm_pu.SMDashboardSummary(module)
         return data 
+
+@api.route('/dashboard-summary-module/<module_name>')
+class DashboardSummaryModule(Resource):
+    def get(self, module_name):
+        data = sm_pu.SMDashboardSummary(module_name)
+        return data
