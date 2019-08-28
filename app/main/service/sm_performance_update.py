@@ -175,6 +175,43 @@ class SM_Performance_Update(SM_Performance_Setter):
             no += 1
         return content
 
+    def daily_actual(self, topic, working_days, actual_cummulative):
+        content = {'100': topic}
+        no = self.START_NO
+        index = 1
+        for i in working_days: 
+            if "null-" not in i:
+                content[no] = int(actual_cummulative[no]/index) if actual_cummulative[no] != "" else ""
+            else:
+                content[no] = ""
+            index += 1
+            no += 1
+        return content
+    
+    def daily_target_to_achieve(self,working_days, monthly_target, actual_cummulative):
+        content = {'100':'Daily Target To Achieve'}
+        no = self.START_NO
+        not_null_day = [ x for x in working_days if "null-" not in x ]
+        last_day_commulative = [ y for y in monthly_target if monthly_target[y] != "" ]
+        month_target = monthly_target[last_day_commulative[-1]]
+        no = self.START_NO
+        index = 1
+        for i in working_days:
+            if "null-" not in i:
+                content[no] = int((month_target - actual_cummulative[no])/(len(not_null_day)-1)) if actual_cummulative[no] != "" else ""
+            else:
+                content[no] = ""
+            index += 1
+            no += 1
+        return content
+
+    def empty_line(self, working_days):
+        content = {'100':'empty'}
+        no = self.START_NO
+        for i in working_days:
+            content[no] = ""
+        return content
+
     def dailySupplierRevenueMOF(self):
         working_days = common.GetWorkingDay()
         date = self.date_column(working_days)
@@ -182,14 +219,16 @@ class SM_Performance_Update(SM_Performance_Setter):
         target_renew = self.content_builder('Target Renew', sm_query.union_supplier_revenue(working_days, 'TARGET_RENEW_SUPPLIER_WORKING_DAY'))
         total_daily_target = self.total_daily('total', 'Total Daily Target', working_days, target_new, target_renew)
         total_commulative_target = self.total_commulative('commulative', 'Total Commulative Target', working_days, target_new, target_renew)
-        actual_new = self.content_builder('Actual New', sm_query.ora_actual_supplier_revenue(working_days, 'N'), 1)
-        actual_renew = self.content_builder('Actual Renew', sm_query.ora_actual_supplier_revenue(working_days, 'R'), 1)
+        actual_new = self.content_builder('Actual New', oracle_sm_query.ora_actual_supplier_revenue(working_days, 'N'), 1)
+        actual_renew = self.content_builder('Actual Renew', oracle_sm_query.ora_actual_supplier_revenue(working_days, 'R'), 1)
         total_daily_actual = self.total_daily('total', 'Total Daily Actual', working_days, actual_new, actual_renew)
         total_commulative_actual = self.total_commulative('commulative', 'Total Commulative Actual', working_days, actual_new, actual_renew)
         variance_new = self.variance('Variance New', working_days, actual_new, target_new)
         variance_renew = self.variance('Variance Renew', working_days, actual_renew, target_renew)
         total_daily_variance = self.total_variance('Total Daily Variance', working_days, variance_new, variance_renew)
         total_commulative_variance = self.total_commulative_variance('commulative', 'Total Commulative Variance', working_days, variance_new, variance_renew)
+        daily_actual = self.daily_actual('Daily Actual',working_days, total_commulative_actual)
+        daily_target_to_achieve = self.daily_target_to_achieve(working_days,total_commulative_target, total_commulative_actual)
         dataset = [
             date,
             target_new,
@@ -203,7 +242,10 @@ class SM_Performance_Update(SM_Performance_Setter):
             variance_new,
             variance_renew,
             total_daily_variance,
-            total_commulative_variance
+            total_commulative_variance,
+            self.empty_line(working_days),
+            daily_actual,
+            daily_target_to_achieve
         ]
         return dataset
 
@@ -228,7 +270,7 @@ class SM_Performance_Update(SM_Performance_Setter):
             "ws_status": "SUCCESS",
             "ws_error": ""
         }
-        common_query.register_ws(input)
+        # common_query.register_ws(input)
         return dataset
 
     def SupplierRevenueSummaryPivot(self):
@@ -380,7 +422,6 @@ class SM_Performance_Update(SM_Performance_Setter):
         return indicator
 
     def SMDashboardSummary(self, module = 'all'):
-        print(module)
         if module == "mof_registration":
             data = self.PerformanceMofRegistration()
         if module == None:
