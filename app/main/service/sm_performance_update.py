@@ -199,7 +199,7 @@ class SM_Performance_Update(SM_Performance_Setter):
         index = 1
         for i in working_days:
             if "null-" not in i:
-                content[no] = int((month_target - actual_cummulative[no])/(len(working_days_in_month-1)) if actual_cummulative[no] != "" else ""
+                content[no] = int((month_target - actual_cummulative[no])/(working_days_in_month-1)) if actual_cummulative[no] != "" else ""
                 working_days_in_month -= 1
             else:
                 content[no] = ""
