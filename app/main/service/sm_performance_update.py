@@ -194,11 +194,13 @@ class SM_Performance_Update(SM_Performance_Setter):
         not_null_day = [ x for x in working_days if "null-" not in x ]
         last_day_commulative = [ y for y in monthly_target if monthly_target[y] != "" ]
         month_target = monthly_target[last_day_commulative[-1]]
+        working_days_in_month = len(not_null_day)
         no = self.START_NO
         index = 1
         for i in working_days:
             if "null-" not in i:
-                content[no] = int((month_target - actual_cummulative[no])/(len(not_null_day)-1)) if actual_cummulative[no] != "" else ""
+                content[no] = int((month_target - actual_cummulative[no])/(len(working_days_in_month-1)) if actual_cummulative[no] != "" else ""
+                working_days_in_month -= 1
             else:
                 content[no] = ""
             index += 1
@@ -206,7 +208,7 @@ class SM_Performance_Update(SM_Performance_Setter):
         return content
 
     def empty_line(self, working_days):
-        content = {'100':'empty'}
+        content = {'100':''}
         no = self.START_NO
         for i in working_days:
             content[no] = ""
