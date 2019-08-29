@@ -48,3 +48,9 @@ class DashboardSummaryModule(Resource):
     def get(self, module_name):
         data = sm_pu.SMDashboardSummary(module_name)
         return data
+
+@api.route('/prediction/lr')
+class PredictionLR(Resource):
+    def get(self):
+        data = sm_pu.MOF_Predict()
+        return data

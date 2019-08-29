@@ -7,6 +7,8 @@ from ..model.sm_query import SM_Query
 from ..model.oracle.supplier_management import ORACLE_SM_QUERY
 from ..model.common import Common_Query
 
+from .predictions.linear_regression import Lr_Predict
+
 common = CommonMethod()
 sm_query = SM_Query()
 oracle_sm_query = ORACLE_SM_QUERY()
@@ -57,6 +59,12 @@ class SM_Performance_Setter:
 
 
 class SM_Performance_Update(SM_Performance_Setter):
+
+    def Dataset_MOF(self):
+        ws_name = "MOF_REGISTRATION"
+        existed = sm_query.get_today_ws_name(ws_name, str(date.today()))
+        dataset = json.loads(existed[0]['ws_data']) if len(existed) > 0 else self.createMOFRegistrationDataset()
+        return dataset
 
     def max_columns(self, cur_columns, columns = 30):
         empty_column = []
@@ -247,7 +255,8 @@ class SM_Performance_Update(SM_Performance_Setter):
             total_commulative_variance,
             self.empty_line(working_days),
             daily_actual,
-            daily_target_to_achieve
+            daily_target_to_achieve,
+            self.MOF_Predict(working_days,total_commulative_actual)
         ]
         return dataset
 
@@ -276,12 +285,7 @@ class SM_Performance_Update(SM_Performance_Setter):
         return dataset
 
     def SupplierRevenueSummaryPivot(self):
-        ws_name = "MOF_REGISTRATION"
-        existed = sm_query.get_today_ws_name(ws_name, str(date.today()))
-        if len(existed) > 0:
-            dataset = json.loads(existed[0]['ws_data'])
-        else:
-            dataset = self.createMOFRegistrationDataset()
+        dataset = self.Dataset_MOF()
         return self.MofRegistrationPivot(dataset)
 
     def pivot_construct(self, rows):
@@ -309,6 +313,9 @@ class SM_Performance_Update(SM_Performance_Setter):
 
             if b[self.TOPIC] == "Total Commulative Actual":
                 total_commulative_actual = self.pivot_construct(b)
+            
+            if b[self.TOPIC] == "Prediction":
+                prediction = self.pivot_construct(b)
 
         for d in working_days:
             if working_days[d] != "Date" and working_days[d] != 'TOTAL':
@@ -323,7 +330,8 @@ class SM_Performance_Update(SM_Performance_Setter):
                     "Total Daily Target": total_daily_target[i] if total_daily_actual[i] != "" else "",
                     "Total Commulative Target": total_commulative_target[i] if total_daily_actual[i] != "" else "",
                     "Total Daily Actual": total_daily_actual[i],
-                    "Total Commulative Actual" : total_commulative_actual[i]
+                    "Total Commulative Actual" : total_commulative_actual[i],
+                    "Prediction": prediction[i]
                 }
                 pivot_data.append(content)
             no += 1
@@ -451,3 +459,20 @@ class SM_Performance_Update(SM_Performance_Setter):
                 }
             ]
         return data
+
+    def MOF_Predict(self, working_days, total_actual_cummulative):
+        work_days = []
+        day = 1
+        for k in working_days:
+            if "null-" not in k:
+                work_days.append(day)
+                day += 1
+        actual_cummulative = []
+        for i in total_actual_cummulative:
+            if type(total_actual_cummulative[i]) == int:
+                actual_cummulative.append(total_actual_cummulative[i])
+        
+        total_working_days = len(work_days)
+        lr_pred = Lr_Predict()
+        prediction = lr_pred.simple_prediction(work_days[:len(actual_cummulative)], actual_cummulative, total_working_days, self.START_NO)
+        return prediction
