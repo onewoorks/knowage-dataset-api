@@ -316,7 +316,7 @@ class SM_Performance_Update(SM_Performance_Setter):
             
             if b[self.TOPIC] == "Prediction":
                 prediction = self.pivot_construct(b)
-
+                        
         for d in working_days:
             if working_days[d] != "Date" and working_days[d] != 'TOTAL':
                 days.append(d)
