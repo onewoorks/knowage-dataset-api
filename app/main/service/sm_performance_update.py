@@ -327,14 +327,18 @@ class SM_Performance_Update(SM_Performance_Setter):
                 content = {
                     "No": int(no),
                     "Date": column_date[i],
-                    "Total Daily Target": total_daily_target[i] if total_daily_actual[i] != "" else "",
-                    "Total Commulative Target": total_commulative_target[i] if total_daily_actual[i] != "" else "",
+                    # "Total Daily Target": total_daily_target[i] if total_daily_actual[i] != "" else "",
+                    # "Total Commulative Target": total_commulative_target[i] if total_daily_actual[i] != "" else "",
+                    "Total Daily Target": total_daily_target[i],
+                    "Total Commulative Target": total_commulative_target[i],
                     "Total Daily Actual": total_daily_actual[i],
                     "Total Commulative Actual" : total_commulative_actual[i],
                     "Prediction": prediction[i]
                 }
                 pivot_data.append(content)
+                print(content)
             no += 1
+            
         return pivot_data
 
     def SupplierRevenueSummary(self):
