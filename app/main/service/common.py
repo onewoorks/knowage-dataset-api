@@ -60,7 +60,7 @@ class CommonMethod:
                 value = i[v]
                 if int(v) >= start_column:
                     if str(i[v]) != "":
-                        value = "{0:,f}".format(float(i[v]))
+                        value = format(int(i[v]),',d')
                 formatted_data[v] = value
             data_out.append(formatted_data)
         return data_out
