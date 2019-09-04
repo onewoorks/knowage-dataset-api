@@ -411,13 +411,18 @@ class SM_Performance_Update(SM_Performance_Setter):
             code_name = i['code_name'].replace('_{}'.format(year),'')
             indicator[code_name] = float(i['amount'])
         actual_sr = 0
+
+        indicator['ACTUAL_NEW_SUPPLIER'] = 0
+        indicator['ACTUAL_RENEW_SUPPLIER'] = 0
+            
         for a in actual:
             if a['APPLICATION_TYPE'] == 'N':
-                indicator['ACTUAL_NEW_SUPPLIER'] = a['AMOUNT']
+                indicator['ACTUAL_NEW_SUPPLIER'] += a['AMOUNT']
             if a['APPLICATION_TYPE'] == 'R':
-                indicator['ACTUAL_RENEW_SUPPLIER'] = a['AMOUNT']
+                indicator['ACTUAL_RENEW_SUPPLIER'] += a['AMOUNT']
             actual_sr += a['AMOUNT']
         indicator['ACTUAL_SR'] = actual_sr
+
         indicator['ACTUAL_NEW_PERCENTAGE'] = self.CalculateActualPercentage(indicator['TARGET_NEW_SUPPLIER'], indicator['ACTUAL_NEW_SUPPLIER'])
         indicator['ACTUAL_RENEW_PERCENTAGE'] = self.CalculateActualPercentage(indicator['TARGET_RENEW_SUPPLIER'], indicator['ACTUAL_RENEW_SUPPLIER'])
         indicator['ACTUAL_MOF_PERCENTAGE'] = self.CalculateActualPercentage(indicator['TARGET_SR'], indicator['ACTUAL_SR'])
