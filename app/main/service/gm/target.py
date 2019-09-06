@@ -14,16 +14,20 @@ class GM_Target():
 
     def Target_Sampling_Pivotal(self):
         data = self.Target_Sampling()
-
         pivot_data = {}
-        month_target = []
-        for m in data['monthly']:
+        pivot_data['monthly'] = self.Pivot_Construct(data['monthly'])
+        return pivot_data
+    
+    def Pivot_Construct(self, data):
+        pivot_data = []
+        index = 1
+        for p in data:
             content = {}
-            content['month'] = m
-            content['value'] = data['monthly'][m]
-            month_target.append(content)
-
-        pivot_data['monthly'] = month_target
+            content['index'] = index
+            content['month'] = p
+            content['value'] = data[p]
+            pivot_data.append(content)
+            index += 1
         return pivot_data
 
     def Target_Sampling_New(self):
