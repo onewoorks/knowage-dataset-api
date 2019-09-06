@@ -86,3 +86,10 @@ class GM_YearTarget(Resource):
         gm_target = GM_Target()
         data = gm_target.Target_Sampling()
         return data
+
+@api.route('/year-target-pivot')
+class GM_YearTargetPivot(Resource):
+    def get(self):
+        gm_target = GM_Target()
+        data = gm_target.Target_Sampling_Pivotal()
+        return data

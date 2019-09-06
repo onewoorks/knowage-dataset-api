@@ -23,7 +23,6 @@ class MYSQL_GM_QUERY:
         query += "FROM ws_data "
         query += "WHERE ws_name = 'GM_TARGET' AND ws_is_active = '1' LIMIT 1"
         resp = execute_query(query)
-        print(resp)
         return resp
 
     def monthly_target(self):

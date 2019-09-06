@@ -12,6 +12,20 @@ class GM_Target():
         target = mysql_query.detail_year_target_ws() 
         return  json.loads(target[0]['ws_data'])
 
+    def Target_Sampling_Pivotal(self):
+        data = self.Target_Sampling()
+
+        pivot_data = {}
+        month_target = []
+        for m in data['monthly']:
+            content = {}
+            content['month'] = m
+            content['value'] = data['monthly'][m]
+            month_target.append(content)
+
+        pivot_data['monthly'] = month_target
+        return pivot_data
+
     def Target_Sampling_New(self):
         print('------ collecting sample ------')
         detail_year_target = mysql_query.detail_year_target()
