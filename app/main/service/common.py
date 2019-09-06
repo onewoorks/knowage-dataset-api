@@ -64,3 +64,9 @@ class CommonMethod:
                 formatted_data[v] = value
             data_out.append(formatted_data)
         return data_out
+
+    def DictToJson(self, data):
+        final = {}
+        for i in data:
+            final[i] = float(data[i])
+        return final

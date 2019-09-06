@@ -5,6 +5,7 @@ from ..service.gm.contribution_of_pv import ContributionOfPVPerformanceUpdate
 from ..service.gm.pending_payment_cycle import PendingPaymentCyclePerformanceUpdate
 from ..service.gm.pv_tr_summary import PvTrSummaryPerformanceUpdate
 from ..service.gm.pv_status import PVStatusPerformanceUpdate
+from ..service.gm.target import GM_Target
 
 from ..model.gm_query import GM_Query
 
@@ -77,4 +78,11 @@ class GM_NumberOfPtjByMinistry(Resource):
     def get(self):
         query_result = gm_query.get_ministry_no_of_ptj()
         data = gm_pv_status.NumberOfPtjByMinistry(query_result)
+        return data
+
+@api.route('/year-target')
+class GM_YearTarget(Resource):
+    def get(self):
+        gm_target = GM_Target()
+        data = gm_target.Target_Sampling()
         return data

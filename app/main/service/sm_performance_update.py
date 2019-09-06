@@ -336,7 +336,6 @@ class SM_Performance_Update(SM_Performance_Setter):
                     "Prediction": prediction[i]
                 }
                 pivot_data.append(content)
-                print(content)
             no += 1
             
         return pivot_data
