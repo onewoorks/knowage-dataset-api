@@ -16,6 +16,7 @@ class GM_Target():
         data = self.Target_Sampling()
         pivot_data = {}
         pivot_data['monthly'] = self.Pivot_Construct(data['monthly'])
+        pivot_data['monthly_commulative'] = self.Pivot_Commulative_Construct(data['monthly'])
         return pivot_data
     
     def Pivot_Construct(self, data):
@@ -26,6 +27,20 @@ class GM_Target():
             content['index'] = index
             content['month'] = p
             content['value'] = data[p]
+            pivot_data.append(content)
+            index += 1
+        return pivot_data
+    
+    def Pivot_Commulative_Construct(self, data):
+        commulate_value = 0
+        pivot_data = []
+        index = 1
+        for p in data:
+            content = {}
+            commulate_value += float(data[p])
+            content['index'] = index
+            content['month'] = p
+            content['value'] = str(commulate_value)
             pivot_data.append(content)
             index += 1
         return pivot_data
