@@ -93,3 +93,4 @@ class GM_YearTargetPivot(Resource):
         gm_target = GM_Target()
         data = gm_target.Target_Sampling_Pivotal()
         return data
+

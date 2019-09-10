@@ -17,6 +17,8 @@ class GM_Target():
         pivot_data = {}
         pivot_data['monthly'] = self.Pivot_Construct(data['monthly'])
         pivot_data['monthly_commulative'] = self.Pivot_Commulative_Construct(data['monthly'])
+        pivot_data['zone_pivot'] = data['zone_pivot']
+    
         return pivot_data
     
     def Pivot_Construct(self, data):
@@ -44,6 +46,7 @@ class GM_Target():
             pivot_data.append(content)
             index += 1
         return pivot_data
+
 
     def Target_Sampling_New(self):
         print('------ collecting sample ------')
