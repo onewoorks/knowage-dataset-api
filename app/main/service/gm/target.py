@@ -17,11 +17,12 @@ class GM_Target():
         pivot_data = {}
         pivot_data['monthly'] = self.Pivot_Construct(data['monthly'])
         pivot_data['monthly_commulative'] = self.Pivot_Commulative_Construct(data['monthly'])
-        pivot_data['zone_pivot'] = self.Pivot_Zone_Construct(data['zone'])
+        pivot_data['zone_pivot'] = self.Pivot_Month_Construct(data['zone'])
+        pivot_data['kementerian_pivot'] = self.Pivot_Month_Construct(data['kementerian'])
     
         return pivot_data
     
-    def Pivot_Zone_Construct(self, data):
+    def Pivot_Month_Construct(self, data):
         month = range(12)
         zone_list = []
         for zl in data:
