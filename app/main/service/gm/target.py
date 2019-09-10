@@ -36,7 +36,7 @@ class GM_Target():
             content['index'] = m
             content['month'] = common_method.GetMonthName(m) 
             for zm in zone_list:
-                content[zm] = float(data[zm][common_method.GetMonthName(m)])
+                content[zm] = int(data[zm][common_method.GetMonthName(m)])
             zone_pivot.append(content)
     
         return  zone_pivot
