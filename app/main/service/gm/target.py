@@ -57,14 +57,21 @@ class GM_Target():
         month = range(12)
         data_list = []
 
+        header = {}
+        header[100] = 'KEMENTERIAN'
+        for m in month:
+            index = 101 + m
+            header[index] = common_method.GetMonthName(m+1) 
+
+        data_list.append(header)
+
         for kl in data:
             content = {}
-            content['KEMENTERIAN_NAME'] = kl
+            content[100] = kl
             for m in month:
-                m += 1
-                content[common_method.GetMonthName(m)] = data[kl][common_method.GetMonthName(m)]
+                index = 101 + m
+                content[index] = data[kl][common_method.GetMonthName(m+1)]
             data_list.append(content)
-            
         return data_list
 
     def Pivot_Commulative_Construct(self, data):
