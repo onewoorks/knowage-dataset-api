@@ -18,7 +18,7 @@ class GM_Target():
         pivot_data['monthly'] = self.Pivot_Construct(data['monthly'])
         pivot_data['monthly_commulative'] = self.Pivot_Commulative_Construct(data['monthly'])
         pivot_data['zone_pivot'] = self.Pivot_Month_Construct(data['zone'])
-        pivot_data['kementerian_pivot'] = self.Pivot_Month_Construct(data['kementerian'])
+        pivot_data['kementerian_pivot'] = self.Birt_Construct(data['kementerian'])
     
         return pivot_data
     
@@ -53,6 +53,20 @@ class GM_Target():
             index += 1
         return pivot_data
     
+    def Birt_Construct(self, data):
+        month = range(12)
+        data_list = []
+
+        for kl in data:
+            content = {}
+            content['KEMENTERIAN_NAME'] = kl
+            for m in month:
+                m += 1
+                content[common_method.GetMonthName(m)] = data[kl][common_method.GetMonthName(m)]
+            data_list.append(content)
+            
+        return data_list
+
     def Pivot_Commulative_Construct(self, data):
         commulate_value = 0
         pivot_data = []
