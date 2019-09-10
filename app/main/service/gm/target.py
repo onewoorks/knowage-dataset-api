@@ -17,10 +17,29 @@ class GM_Target():
         pivot_data = {}
         pivot_data['monthly'] = self.Pivot_Construct(data['monthly'])
         pivot_data['monthly_commulative'] = self.Pivot_Commulative_Construct(data['monthly'])
-        pivot_data['zone_pivot'] = data['zone_pivot']
+        pivot_data['zone_pivot'] = self.Pivot_Zone_Construct(data['zone'])
     
         return pivot_data
     
+    def Pivot_Zone_Construct(self, data):
+        month = range(12)
+        zone_list = []
+        for zl in data:
+            zone_list.append(zl)
+
+        zone_pivot = []
+
+        for m in month:
+            m = m + 1
+            content = {}
+            content['index'] = m
+            content['month'] = common_method.GetMonthName(m) 
+            for zm in zone_list:
+                content[zm] = str(data[zm][common_method.GetMonthName(m)])
+            zone_pivot.append(content)
+    
+        return  zone_pivot
+
     def Pivot_Construct(self, data):
         pivot_data = []
         index = 1
