@@ -70,7 +70,7 @@ class GM_Target():
             content[100] = kl
             for m in month:
                 index = 101 + m
-                content[index] = data[kl][common_method.GetMonthName(m+1)]
+                content[index] = str(data[kl][common_method.GetMonthName(m+1)])
             data_list.append(content)
         return data_list
 
