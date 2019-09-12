@@ -6,6 +6,7 @@ from ..service.gm.pending_payment_cycle import PendingPaymentCyclePerformanceUpd
 from ..service.gm.pv_tr_summary import PvTrSummaryPerformanceUpdate
 from ..service.gm.pv_status import PVStatusPerformanceUpdate
 from ..service.gm.target import GM_Target
+from ..service.gm.revenue import GM_Revenue
 
 from ..model.gm_query import GM_Query
 
@@ -94,3 +95,9 @@ class GM_YearTargetPivot(Resource):
         data = gm_target.Target_Sampling_Pivotal()
         return data
 
+@api.route('/revenue')
+class GM_RevenueRoute(Resource):
+    def get(self):
+        gm_revenue = GM_Revenue()
+        data = gm_revenue.PV_Summary()
+        return data

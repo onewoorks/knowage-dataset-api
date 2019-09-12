@@ -1,6 +1,13 @@
 from .. import execute_query
+from . import Common_Query
 
-class MYSQL_GM_QUERY:
+common_query = Common_Query()
+
+class MYSQL_GM_QUERY():
+
+    def Get_Latest_WS(self,module_name):
+        print('in here')
+        return common_query.Get_Latest_WS_Data(module_name)
 
     def yearly_target(self):
         query = "SELECT sum(target_year) AS yearly_target "
