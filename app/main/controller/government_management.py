@@ -99,5 +99,12 @@ class GM_YearTargetPivot(Resource):
 class GM_RevenueRoute(Resource):
     def get(self):
         gm_revenue = GM_Revenue()
-        data = gm_revenue.PV_Summary()
+        data = gm_revenue.Revenue_Summary()
+        return data
+
+@api.route('/revenue-pivot')
+class GM_RevenuePivot(Resource):
+    def get(self):
+        gm_revenue = GM_Revenue()
+        data = gm_revenue.Revenue_Pivot()
         return data
