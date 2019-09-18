@@ -48,66 +48,47 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
         gm_query = MYSQL_GM_QUERY()
         monthly_actual_pv = gm_query.pending_payment_cycle_monthly_actual_pv()
         monthly_po_cancel = gm_query.pending_payment_cycle_monthly_po_cancel()
-        # pending_payment_data = []
-        # start_column = 100
-
-
-
-        # for i in range(datetime.today().month):
-        #     columns = []
-        #     for a in range(18):
-        #         content = {}
-        #         content[start_column+a] = 
-        #         columns.append(content)
-        #         print(content)
-        #     print('\n')
-        #     # content['month'] = monthly_actual_pv[i]['date_pv'].upper()
-        #     # content['actual_pv'] = "{:,.0f}".format(int(monthly_actual_pv[i]['total_pv']))
-        #     # content['po_cancel'] = "{:,.0f}".format(int(monthly_po_cancel[i]['total_pv_cancel']))
-        #     # pv_expected = int(monthly_actual_pv[i]['total_pv']) - int(monthly_po_cancel[i]['total_pv_cancel'])
-        #     # content['pv_expected'] = "{:,.0f}".format(pv_expected)
-        #     # content['pending_payment'] = self.PendingPaymentCycleMonthlyInfo()
-        #     # print(columns)
-        #     # pending_payment_data.append(content)
-        # return pending_payment_data
-        pending_payment_data = []
-        self.PendingPaymentDatasetConstruct(self.HEADING)
-        self.PendingPaymentMonthlyInfo()
+        heading = self.PendingPaymentDatasetConstruct(self.HEADING)
+        pending_payment_month = self.PendingPaymentMonthlyInfo()
+        pending_payment_data = [heading]
         for r in range(datetime.today().month):
-            # print(r)
-            # rowset = [
-            #     int(monthly_actual_pv[r]['total_pv']),
-            #     int(monthly_po_cancel[r]['total_pv_cancel']),
-            #     int(monthly_actual_pv[r]['total_pv']) - int(monthly_po_cancel[r]['total_pv_cancel'])
-            #     ]
-            
-            # rowset = rowset + self.PendingPaymentCycleMonthlyInfo(r)
-            # print(self.PendingPaymentRowSetter(rowset))
-            # pending_payment_data.append("")
-            pass
-        
-        # info_row = gm_query.pending_payment_cycle_monthly_payment(datetime.today().month)
-        
+            pv_expected = int(monthly_actual_pv[r]['total_pv']) - int(monthly_po_cancel[r]['total_pv_cancel'])
+            rowset = [
+                common.GetMonthName(r+1),
+                int(monthly_actual_pv[r]['total_pv']),
+                int(monthly_po_cancel[r]['total_pv_cancel']),
+                pv_expected,
+                ]
+            rowset = rowset + pending_payment_month[int(r)]
+            balance_pv = pv_expected - rowset[-1]
+            rowset.append(balance_pv)
+            pending_payment_data.append(self.PendingPaymentDatasetConstruct(rowset))
         return pending_payment_data
 
     def PendingPaymentMonthlyInfo(self):
         gm_query = MYSQL_GM_QUERY()
+        to_current_month = []
         for i in range(datetime.today().month):
             content = []
+            grand_total = 0
             total_pv = gm_query.pending_payment_cycle_monthly_payment(i+1)
-            print(common.GetMonthName(i+1))
+            month_pos = 0
+            for m in range(12):
+                if m < i:
+                    content.append("")
+                elif m+1 > datetime.today().month:
+                    content.append("null")
+                else:
+                    grand_total += float(total_pv[month_pos]['total_pv'])
+                    current_pos = float(total_pv[month_pos]['total_pv']) if len(total_pv) > 0 else ""
+                    content.append(current_pos)
+                    month_pos += 1
+            content.append(grand_total)
+            to_current_month.append(content)
+        return to_current_month
 
-            for m in total_pv:
-                content.append(m['date_index'])
-            print(content)
-            print('\n')
-
-
-    
-    
     def PendingPaymentRowSetter(self, rowset):
-        content = []
-
+        print(rowset)
         return rowset
         
 

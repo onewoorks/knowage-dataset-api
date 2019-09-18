@@ -54,6 +54,7 @@ class GM_PendingPaymentCycle(Resource):
         # data = requests.get('http://192.168.62.138:5155/rest/ep/fl/cycle-pending-payment')
         # return gm_pending_payment_cycle.PendingPaymentCycleMilFix(data.json())
         data = gm_pending_payment_cycle.PendingPaymentCycleFromETL()
+        return data
 
 @api.route('/contribution-of-pv-by-ptj')
 class GM_ContributionOfPVByPtj(Resource):

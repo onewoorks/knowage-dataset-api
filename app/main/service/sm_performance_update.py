@@ -327,8 +327,6 @@ class SM_Performance_Update(SM_Performance_Setter):
                 content = {
                     "No": int(no),
                     "Date": column_date[i],
-                    # "Total Daily Target": total_daily_target[i] if total_daily_actual[i] != "" else "",
-                    # "Total Commulative Target": total_commulative_target[i] if total_daily_actual[i] != "" else "",
                     "Total Daily Target": total_daily_target[i],
                     "Total Commulative Target": total_commulative_target[i],
                     "Total Daily Actual": total_daily_actual[i],
@@ -469,6 +467,7 @@ class SM_Performance_Update(SM_Performance_Setter):
         return data
 
     def MOF_Predict(self, working_days, total_actual_cummulative):
+        print(total_actual_cummulative)
         work_days = []
         day = 1
         for k in working_days:
