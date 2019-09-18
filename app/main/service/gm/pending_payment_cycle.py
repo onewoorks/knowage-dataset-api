@@ -1,189 +1,22 @@
 from datetime import datetime
 from ..common import CommonMethod
+from ...model.mysql.government_management import MYSQL_GM_QUERY
 
 common = CommonMethod()
 
-class PendingPaymentCycle:
-    PENDING_PAYMENT_CYCLE = (
-        'MONTH PV',
-        'ACTUAL PV',
-        'PO CANCEL',
-        'PV EXPECTED',
-        'RANGE OF MONTHS',
-        'GRAND TOTAL',
-        'BALANCE PV'
-    )
-
-    SAMPLE_PENDING_PAYMENT = [
-        {
-            "MONTH PV": "JAN",
-            "ACTUAL PV": "1045150285",
-            "PO CANCEL": "29708391",
-            "PV EXPECTED": "1015441894",
-            "JANUARY": "214034397",
-            "FEBRUARY": "395917315",
-            "MARCH": "198440390",
-            "APRIL": "66508112",
-            "MAY": "48288505",
-            "JUNE": "17091680",
-            "JULY": "15110793",
-            "GRAND TOTAL": "955391192",
-            "BALANCE PV": "60050702"
-        },
-        {
-            "MONTH PV": "FEB",
-            "ACTUAL PV": "122160949",
-            "PO CANCEL": "35243958",
-            "PV EXPECTED": "1086916991",
-            "JANUARY": "",
-            "GRAND TOTAL": "1026791085",
-            "BALANCE PV": "60125906",
-            "FEBRUARY": "185082661",
-            "MARCH": "573281",
-            "APRIL": "143399539",
-            "MAY": "82244613",
-            "JUNE": "28611163",
-            "JULY": "14171177"
-        },
-        {
-            "MONTH PV": "MARCH",
-            "ACTUAL PV": 1536076055,
-            "PO CANCEL": 43461344,
-            "PV EXPECTED": 1492614,
-            "JANUARY": "",
-            "FEBRUARY": "",
-            "MARCH": 506616,
-            "APRIL": 581781485,
-            "MAY": 174880868,
-            "JUNE": 44954742,
-            "JULY": 39366982,
-            "GRAND TOTAL": 1347600940,
-            "BALANCE PV": 145013770
-        },
-        {
-            "MONTH PV": "APRIL",
-            "ACTUAL PV": 1487857129,
-            "PO CANCEL": 39562940,
-            "PV EXPECTED": 1448294189,
-            "JANUARY": "",
-            "FEBRUARY": "",
-            "MARCH": "",
-            "APRIL": 541680646,
-            "MAY": 519033346,
-            "JUNE": 98484203,
-            "JULY": 59913284,
-            "GRAND TOTAL": 129111480,
-            "BALANCE PV": 229182710
-        },
-        {
-            "MONTH PV": "MAY",
-            "ACTUAL PV": 1523744310,
-            "PO CANCEL": 25324673,
-            "PV EXPECTED": 1498419637,
-            "JANUARY": "",
-            "FEBRUARY": "",
-            "MARCH": "",
-            "APRIL": "",
-            "MAY": 578954746,
-            "JUNE": 411456596,
-            "JULY": 171039743,
-            "GRAND TOTAL": 1161451085,
-            "BALANCE PV": 333968552
-        },
-        {
-            "MONTH PV": "JUNE",
-            "ACTUAL PV": 1049899436,
-            "PO CANCEL": 6767267,
-            "PV EXPECTED": 960600197,
-            "JANUARY": "",
-            "FEBRUARY": "",
-            "MARCH": "",
-            "APRIL": "",
-            "MAY": "",
-            "JUNE": 263541788,
-            "JULY": 310747718,
-            "GRAND TOTAL": 574289506,
-            "BALANCE PV": 456449278
-        },
-        {
-            "MONTH PV": "JULY",
-            "ACTUAL PV": 967367464,
-            "PO CANCEL": 676267,
-            "PV EXPECTED": 960600197,
-            "JANUARY": "",
-            "FEBRUARY": "",
-            "MARCH": "",
-            "APRIL": "",
-            "MAY": "",
-            "JUNE": "",
-            "JULY": 213246259,
-            "GRAND TOTAL": 213246259,
-            "BALANCE PV": 747353937
-        },
-        {
-            "MONTH PV": "GRAND TOTAL",
-            "ACTUAL PV": 8732255628,
-            "PO CANCEL": 199229225,
-            "PV EXPECTED": 853026402,
-            "JANUARY": 214034397,
-            "FEBRUARY": 580999975,
-            "MARCH": 1278339185,
-            "APRIL": 1333369783,
-            "MAY": 1403402079,
-            "JUNE": 823595957,
-            "JULY": 213246259,
-            "GRAND TOTAL": 213246259,
-            "BALANCE PV": 747353937
-        }
+class PENDING_PAYMENT_DATASET:
+    HEADING = [
+        'MONTH PV', 'ACTUAL PV', 'PO CANCEL','PV EXPECTED',
+        'JAN',
+        'FEB',
+        'MARCH',
+        'APRIL',
+        'MAY',
+        'JUNE', 'JULY', 'AUGUST', 'SEPT','OCT','NOV','DEC',
+        'Grand Total', 'BALANCE PV'
     ]
 
-    def MonthUntilToday(self):
-        current_month = datetime.now().month
-        i = 1
-        header = []
-        while i <= current_month:
-            month = common.GetMonthName(i)
-            header.append(month)
-            i += 1
-        return header
-
-    def CycleTableTopic(self):
-        new_table_headers = []
-        for a in self.PENDING_PAYMENT_CYCLE:
-            if a.upper() == 'RANGE OF MONTHS':
-                for h in self.MonthUntilToday():
-                    new_table_headers.append(h.upper())
-            else:
-                new_table_headers.append(a)
-        return new_table_headers
-
-    def TemplateCycleBuilder(self,cycle_data):
-        content_body = []
-        topic_header = self.ContentKeyValue(self.CycleTableTopic(), True)
-        content_body.append(topic_header)
-        for i in cycle_data:
-            content_in = {}
-            no = 97
-            for j in self.CycleTableTopic():
-                cur_no = chr(no)
-                content_in[cur_no] = i[j]
-                no += 1
-            content_body.append(content_in)
-        return content_body
-
-    def ContentKeyValue(self, value_header, value_data=False):
-        content = {}
-        no = 97
-        for w in value_header:
-            index = chr(no)
-            if value_data == False:
-                w = ""
-            content[index] = w
-            no += 1
-        return content
-
-
-class PendingPaymentCyclePerformanceUpdate(PendingPaymentCycle):
+class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
     def PendingPaymentCycle(self,mode):
         print(mode)
         return self.TemplateCycleBuilder(self.SAMPLE_PENDING_PAYMENT)
@@ -211,6 +44,76 @@ class PendingPaymentCyclePerformanceUpdate(PendingPaymentCycle):
             clean[i] = val
         return clean
 
+    def PendingPaymentCycleFromETL(self):
+        gm_query = MYSQL_GM_QUERY()
+        monthly_actual_pv = gm_query.pending_payment_cycle_monthly_actual_pv()
+        monthly_po_cancel = gm_query.pending_payment_cycle_monthly_po_cancel()
+        # pending_payment_data = []
+        # start_column = 100
 
 
+
+        # for i in range(datetime.today().month):
+        #     columns = []
+        #     for a in range(18):
+        #         content = {}
+        #         content[start_column+a] = 
+        #         columns.append(content)
+        #         print(content)
+        #     print('\n')
+        #     # content['month'] = monthly_actual_pv[i]['date_pv'].upper()
+        #     # content['actual_pv'] = "{:,.0f}".format(int(monthly_actual_pv[i]['total_pv']))
+        #     # content['po_cancel'] = "{:,.0f}".format(int(monthly_po_cancel[i]['total_pv_cancel']))
+        #     # pv_expected = int(monthly_actual_pv[i]['total_pv']) - int(monthly_po_cancel[i]['total_pv_cancel'])
+        #     # content['pv_expected'] = "{:,.0f}".format(pv_expected)
+        #     # content['pending_payment'] = self.PendingPaymentCycleMonthlyInfo()
+        #     # print(columns)
+        #     # pending_payment_data.append(content)
+        # return pending_payment_data
+        pending_payment_data = []
+        self.PendingPaymentDatasetConstruct(self.HEADING)
+        self.PendingPaymentMonthlyInfo()
+        for r in range(datetime.today().month):
+            # print(r)
+            # rowset = [
+            #     int(monthly_actual_pv[r]['total_pv']),
+            #     int(monthly_po_cancel[r]['total_pv_cancel']),
+            #     int(monthly_actual_pv[r]['total_pv']) - int(monthly_po_cancel[r]['total_pv_cancel'])
+            #     ]
             
+            # rowset = rowset + self.PendingPaymentCycleMonthlyInfo(r)
+            # print(self.PendingPaymentRowSetter(rowset))
+            # pending_payment_data.append("")
+            pass
+        
+        # info_row = gm_query.pending_payment_cycle_monthly_payment(datetime.today().month)
+        
+        return pending_payment_data
+
+    def PendingPaymentMonthlyInfo(self):
+        gm_query = MYSQL_GM_QUERY()
+        for i in range(datetime.today().month):
+            content = []
+            total_pv = gm_query.pending_payment_cycle_monthly_payment(i+1)
+            print(common.GetMonthName(i+1))
+
+            for m in total_pv:
+                content.append(m['date_index'])
+            print(content)
+            print('\n')
+
+
+    
+    
+    def PendingPaymentRowSetter(self, rowset):
+        content = []
+
+        return rowset
+        
+
+    def PendingPaymentDatasetConstruct(self, rowset):
+        start_column = 100
+        content = {}
+        for i in range(len(self.HEADING)):
+            content[start_column+i] = rowset[i]
+        return content
