@@ -55,13 +55,14 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
             pv_expected = int(monthly_actual_pv[r]['total_pv']) - int(monthly_po_cancel[r]['total_pv_cancel'])
             rowset = [
                 common.GetMonthName(r+1),
-                int(monthly_actual_pv[r]['total_pv']),
-                int(monthly_po_cancel[r]['total_pv_cancel']),
-                pv_expected,
+                "{:,.0f}".format(int(monthly_actual_pv[r]['total_pv'])),
+                "{:,.0f}".format(int(monthly_po_cancel[r]['total_pv_cancel'])),
+                "{:,.0f}".format(float(pv_expected)),
                 ]
             rowset = rowset + pending_payment_month[int(r)]
             balance_pv = pv_expected - rowset[-1]
-            rowset.append(balance_pv)
+            rowset[-1] = "{:,.0f}".format(rowset[-1])
+            rowset.append("{:,.0f}".format(balance_pv))
             pending_payment_data.append(self.PendingPaymentDatasetConstruct(rowset))
         return pending_payment_data
 
@@ -80,7 +81,7 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
                     content.append("null")
                 else:
                     grand_total += float(total_pv[month_pos]['total_pv'])
-                    current_pos = float(total_pv[month_pos]['total_pv']) if len(total_pv) > 0 else ""
+                    current_pos = "{:,.0f}".format(float(total_pv[month_pos]['total_pv'])) if len(total_pv) > 0 and total_pv[month_pos]['total_pv'] != '' else ""
                     content.append(current_pos)
                     month_pos += 1
             content.append(grand_total)
