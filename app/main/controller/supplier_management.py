@@ -39,8 +39,8 @@ class SRS_RegistrationRenewalConversionPerformance(Resource):
     
 @api.route('/dashboard-summary')
 class DashboardSummary(Resource):
-    def get(self, module = None):
-        data = sm_pu.SMDashboardSummary(module)
+    def get(self):
+        data = sm_pu.SMDashboardSummary(None)
         return data 
 
 @api.route('/dashboard-summary-module/<module_name>')
