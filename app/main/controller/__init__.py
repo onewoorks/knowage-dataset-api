@@ -8,7 +8,7 @@ from .government_management import api as gm_performance_update_api
 api = Api(
     title="CdcCms Knowage dataset API",
     version="1.0",
-    description="An API for knowage dataset cockpit virtualization"
+    description="An API for knowage dataset cockpit visualization"
 )
 
 api.add_namespace(ep_contract_api)
