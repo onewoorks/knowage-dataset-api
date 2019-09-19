@@ -1,6 +1,8 @@
-from datetime import datetime
+from datetime import datetime, date
 from ..common import CommonMethod
 from ...model.mysql.government_management import MYSQL_GM_QUERY
+
+import json
 
 common = CommonMethod()
 
@@ -45,6 +47,16 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
         return clean
 
     def PendingPaymentCycleFromETL(self):
+        ws_name = "GM_PENDING_PAYMENT_CYCLE"
+        gm_query = MYSQL_GM_QUERY()
+        existed = gm_query.Get_Latest_WS(ws_name)
+        if len(existed) > 0:
+            dataset = json.loads(existed[0]['ws_data'])
+        else:
+            dataset = self.NewPendingPaymentCycle()
+        return dataset
+
+    def CreatePendingPaymentCycleWS(self):
         gm_query = MYSQL_GM_QUERY()
         monthly_actual_pv = gm_query.pending_payment_cycle_monthly_actual_pv()
         monthly_po_cancel = gm_query.pending_payment_cycle_monthly_po_cancel()
@@ -64,7 +76,33 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
             rowset[-1] = "{:,.0f}".format(rowset[-1])
             rowset.append("{:,.0f}".format(balance_pv))
             pending_payment_data.append(self.PendingPaymentDatasetConstruct(rowset))
+        
         return pending_payment_data
+    
+    def NewPendingPaymentCycle(self):
+        start_time = datetime.now()
+        print('----start query----')
+        dataset = self.CreatePendingPaymentCycleWS()
+        print('----end query-----')
+        end_time = datetime.now()
+
+        input = {
+            "ws_name": "GM_PENDING_PAYMENT_CYCLE",
+            "ws_is_active": "1",
+            "ws_desc": "GM Pending Payment Cycle - Pending Payment as at {}".format(date.today().strftime("%d %B %Y")),
+            "ws_group": "SM",
+            "ws_start_execute": start_time,
+            "ws_end_execute": end_time,
+            "ws_duration": int((end_time-start_time).total_seconds()),
+            "ws_data": json.dumps(dataset),
+            "ws_created_at": datetime.now(),
+            "ws_updated_at": datetime.now(),
+            "ws_status": "SUCCESS",
+            "ws_error": ""
+        }
+        gm_query = MYSQL_GM_QUERY()
+        gm_query.create_new_ws(input)
+        return dataset
 
     def PendingPaymentMonthlyInfo(self):
         gm_query = MYSQL_GM_QUERY()

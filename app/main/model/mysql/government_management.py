@@ -4,6 +4,10 @@ common_query = Common_Query()
 
 class MYSQL_GM_QUERY():
 
+    def create_new_ws(self, ws_data):
+        common_query.Register_New_Ws(ws_data)
+        pass
+
     def Get_Latest_WS(self,module_name):
         return common_query.Get_Latest_WS_Data(module_name)
 
