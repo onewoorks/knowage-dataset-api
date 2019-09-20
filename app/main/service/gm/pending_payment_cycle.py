@@ -87,6 +87,8 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
             pending_payment_data_percent.append(self.PendingPaymentDatasetConstruct(by_percentage))
         
         pending_payment_data.append(self.PendingPaymentDatasetConstruct(self.PendingPaymentCycleSummary(plain_value)))
+        pending_payment_data_percent.append(self.PendingPaymentDatasetConstruct(self.PendingPaymentCycleSummary(plain_value,'percent')))
+        print(pending_payment_data_percent)
         return {
             "by_value" : pending_payment_data,
             "by_percent" : pending_payment_data_percent
@@ -99,7 +101,7 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
                 rowset[index] = "{:,.2f} %".format((float(value)/float(pv_value))*100)
         return rowset
 
-    def PendingPaymentCycleSummary(self, dataset):
+    def PendingPaymentCycleSummary(self, dataset, mode='value'):
         summary = []
         for value in dataset:
             month_column = []
@@ -117,6 +119,10 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
 
         for index, value in enumerate(sum_data):
             sum_data[index] = common.NumberToFormat(value)
+
+        if mode != 'value':
+            for ind, update in enumerate(sum_data[3:]):
+                sum_data[ind+3] = ""
 
         sum_data.insert(0,'Summary')
         return sum_data
