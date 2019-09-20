@@ -70,3 +70,10 @@ class CommonMethod:
         for i in data:
             final[i] = float(data[i])
         return final
+
+    def StringToNumber(self, value):
+        to_string = str(value).replace(',','') if value != 'null' and len(value) > 0 else 0
+        return float(to_string)
+
+    def NumberToFormat(self, value):
+        return "{:,.2f}".format(value)

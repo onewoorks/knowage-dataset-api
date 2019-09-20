@@ -64,6 +64,7 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
         pending_payment_month = self.PendingPaymentMonthlyInfo()
         pending_payment_data = [heading]
         pending_payment_data_percent = [heading]
+        plain_value = []
         for r in range(datetime.today().month):
             pv_expected = int(monthly_actual_pv[r]['total_pv']) - int(monthly_po_cancel[r]['total_pv_cancel'])
             rowset = [
@@ -78,11 +79,14 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
             balance_pv = pv_expected - by_value[-1]
             by_value[-1] = "{:,.2f}".format(by_value[-1])
             by_value.append("{:,.2f}".format(balance_pv))
+            plain_value.append(by_value)
 
             balance_pv_percentage = "{:.2f} %".format((balance_pv/pv_expected)*100)
             by_percentage.append(balance_pv_percentage)
             pending_payment_data.append(self.PendingPaymentDatasetConstruct(by_value))
             pending_payment_data_percent.append(self.PendingPaymentDatasetConstruct(by_percentage))
+        
+        pending_payment_data.append(self.PendingPaymentDatasetConstruct(self.PendingPaymentCycleSummary(plain_value)))
         return {
             "by_value" : pending_payment_data,
             "by_percent" : pending_payment_data_percent
@@ -95,12 +99,34 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
                 rowset[index] = "{:,.2f} %".format((float(value)/float(pv_value))*100)
         return rowset
 
-    
+    def PendingPaymentCycleSummary(self, dataset):
+        summary = []
+        for value in dataset:
+            month_column = []
+            for mv in value[1:]:
+                month_column.append(common.StringToNumber(mv))
+            summary.append(month_column)
+            
+        sum_data = []
+        for to_sum in summary:
+            for i in range(len(to_sum)):
+                if len(sum_data) < len(to_sum):
+                    sum_data.append(to_sum[i])
+                else:
+                    sum_data[i] = sum_data[i] + to_sum[i]
+
+        for index, value in enumerate(sum_data):
+            sum_data[index] = common.NumberToFormat(value)
+
+        sum_data.insert(0,'Summary')
+        return sum_data
+        
     def NewPendingPaymentCycle(self):
         start_time = datetime.now()
-        print('----start query----')
+        print('-- GM PENDING PAYMENT CYCLE --')
+        print('-- start query----')
         dataset = self.CreatePendingPaymentCycleWS()
-        print('----end query-----')
+        print('-- end query-----')
         end_time = datetime.now()
 
         input = {
@@ -118,7 +144,7 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
             "ws_error": ""
         }
         gm_query = MYSQL_GM_QUERY()
-        gm_query.create_new_ws(input)
+        # gm_query.create_new_ws(input)
         return dataset
 
     def PendingPaymentMonthlyInfo(self):
