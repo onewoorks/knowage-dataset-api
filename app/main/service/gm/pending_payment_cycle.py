@@ -88,10 +88,12 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
         
         pending_payment_data.append(self.PendingPaymentDatasetConstruct(self.PendingPaymentCycleSummary(plain_value)))
         pending_payment_data_percent.append(self.PendingPaymentDatasetConstruct(self.PendingPaymentCycleSummary(plain_value,'percent')))
-        print(pending_payment_data_percent)
+        
         return {
             "by_value" : pending_payment_data,
-            "by_percent" : pending_payment_data_percent
+            "by_percent" : pending_payment_data_percent,
+            "pivot" : self.PendingPaymentToPivot(plain_value),
+            "pivot_summary" : self.PendingPaymentPivotSummary(pending_payment_data[-1])
         }
 
     def PendingPaymentCyclePercentage(self, rowset, pv_value):
@@ -126,6 +128,33 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
 
         sum_data.insert(0,'Summary')
         return sum_data
+    
+    def PendingPaymentToPivot(self, dataset):
+        pivot = []
+        for m in range(len(dataset)):
+            content = {}
+            content['index'] = m+1
+            content['month'] = common.GetMonthName(m+1).upper()
+            content['actual_pv'] = dataset[m][1].replace(',','')
+            content['po_cancel'] = dataset[m][2].replace(',','')
+            content['pv_expected'] = dataset[m][3].replace(',','')
+            pivot.append(content)
+        return pivot
+    
+    def PendingPaymentPivotSummary(self, dataset):
+        pivot_summary = [
+            {
+                "name" : "ACTUAL PV",
+                "value" : dataset[101].replace(',',''),
+                "format_value" : dataset[101]
+            },
+            {
+                "name" : "PO CANCEL",
+                "value" : dataset[102].replace(',',''),
+                "format_value" : dataset[102]
+            }
+        ]
+        return pivot_summary
         
     def NewPendingPaymentCycle(self):
         start_time = datetime.now()

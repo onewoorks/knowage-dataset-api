@@ -73,7 +73,7 @@ class CommonMethod:
 
     def StringToNumber(self, value):
         to_string = str(value).replace(',','') if value != 'null' and len(value) > 0 else 0
-        return float(to_string)
+        return round(float(to_string),2)
 
     def NumberToFormat(self, value):
         return "{:,.2f}".format(value)
