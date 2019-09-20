@@ -144,7 +144,7 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
             "ws_error": ""
         }
         gm_query = MYSQL_GM_QUERY()
-        # gm_query.create_new_ws(input)
+        gm_query.create_new_ws(input)
         return dataset
 
     def PendingPaymentMonthlyInfo(self):
