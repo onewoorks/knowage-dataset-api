@@ -66,7 +66,7 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
         pending_payment_data_percent = [heading]
         plain_value = []
         for r in range(datetime.today().month):
-            pv_expected = int(monthly_actual_pv[r]['total_pv']) - int(monthly_po_cancel[r]['total_pv_cancel'])
+            pv_expected = float(monthly_actual_pv[r]['total_pv']) - float(monthly_po_cancel[r]['total_pv_cancel'])
             rowset = [
                 common.GetMonthName(r+1),
                 "{:,.2f}".format(float(monthly_actual_pv[r]['total_pv'])),

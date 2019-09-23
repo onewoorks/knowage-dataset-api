@@ -34,8 +34,7 @@ class GM_TRSummary(Resource):
 @api.route('/pv-status')
 class GM_PVStatus(Resource):
     def get(self):
-        ministry = gm_query.get_pv_status()
-        data = gm_pv_status.PVStatusSummary(ministry)
+        data = gm_pv_status.PVStatusSummaryFromETL()
         return data
 
 # @api.route('/pending-payment-cycle/<mode>/', endpoint= "pending-payment-cycle", defaults={ 'mode': 'amount'})
@@ -51,8 +50,6 @@ class GM_PVStatus(Resource):
 @api.route('/pending-payment-cycle')
 class GM_PendingPaymentCycle(Resource):
     def get(self):
-        # data = requests.get('http://192.168.62.138:5155/rest/ep/fl/cycle-pending-payment')
-        # return gm_pending_payment_cycle.PendingPaymentCycleMilFix(data.json())
         data = gm_pending_payment_cycle.PendingPaymentCycleFromETL()
         return data
 

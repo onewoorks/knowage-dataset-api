@@ -76,3 +76,47 @@ class MYSQL_GM_QUERY():
         query += "ORDER BY 1"
         resp = execute_query(query)
         return resp
+
+    def pv_status_actual_pv(self):
+        query = "SELECT fl_created_ministry_id AS ministry_id, "
+        query += "SUM(fl_total_amount) AS total "
+        query += "FROM ep_fulfilment "
+        query += "WHERE fl_financial_year = '2019' "
+        query += "AND fl_module IN ('Contract Order','Purchase Order') "
+        query += "GROUP BY fl_created_ministry_id "
+        resp = execute_query(query)
+        return resp
+
+    def pv_status_cancel(self):
+        query = "SELECT "
+        query += "fl.fl_created_ministry_id as ministry_id, "
+        query += "SUM(fl.fl_total_amount) AS total "
+        query += "FROM ep_fulfilment fl "
+        query += "WHERE fl.fl_financial_year = '2019' "
+        query += "AND fl.fl_module IN ('Contract Order','Purchase Order') "
+        query += "AND fl.fl_latest_status_id IN (41400,41900,47900,41440,41940,41430,40910,41410,41910,40810,41310) "
+        query += "GROUP BY fl.fl_created_ministry_id "
+        resp = execute_query(query)
+        return resp
+
+    def pv_status_pending_payment(self):
+        query = "SELECT "
+        query += "fl_created_ministry_id AS ministry_id, "
+        query += "SUM(fl_total_amount) AS total "
+        query += "FROM ep_fulfilment "
+        query += "WHERE fl_financial_year = '2019' "
+        query += "AND fl_module IN ('Contract Order','Purchase Order') "
+        query += "AND fl_latest_status_id IN (41030,41035,41535,41530,41030) "
+        query += "GROUP BY fl_created_ministry_id"
+        resp = execute_query(query)
+        return resp
+
+    def ReadMinistryActive(self):
+        query   = "SELECT org_profile_id, org_name as kementerian_name, "
+        query   += "org_code " 
+        query   += "FROM ep_org_profile "
+        query   += "WHERE org_type_id = 2 "
+        query   += "AND record_status = 1 "
+        query   += "ORDER BY org_code"
+        resp    = execute_query(query)
+        return resp

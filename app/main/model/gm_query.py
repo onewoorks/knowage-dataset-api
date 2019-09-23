@@ -3,11 +3,13 @@ from . import execute_query
 from datetime import datetime
 
 class GM_Query:
-    def get_pv_status(self):
-        query   = "SELECT kementerian_name " 
-        query   += "FROM ep_org_profile_ptj "
-        query   += "WHERE kementerian_name != 'DUMMY' "
-        query   += "GROUP BY kementerian_name"
+    def ReadMinistryActive(self):
+        query   = "SELECT org_profile_id, org_name as kementerian_name, "
+        query   += "org_code " 
+        query   += "FROM ep_org_profile "
+        query   += "WHERE org_type_id = 2 "
+        query   += "AND record_status = 1 "
+        query   += "ORDER BY org_code"
         resp    = execute_query(query)
         return resp
 
