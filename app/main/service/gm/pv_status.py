@@ -92,11 +92,19 @@ class PVStatusPerformanceUpdate(PVStatus):
         actual_pvs = self.__PvStatusActualPV()
         cancel = self.__PVStatusPOCancel()
         pending_payment_pvs = self.__PVStatusPendingPayment()
+        total_actual = 0
+        total_cancel = 0
+        total_pending = 0
+        total_other = 0
         for i in ministry:
             actual_pv = self.__PVStatusByMinistry(actual_pvs,'ministry_id', i['org_profile_id'])
             cancel_pv = self.__PVStatusByMinistry(cancel,'ministry_id', i['org_profile_id'])
             pending_payment = self.__PVStatusByMinistry(pending_payment_pvs,'ministry_id',i['org_profile_id'])
             other_status = actual_pv - cancel_pv - pending_payment
+            total_actual += actual_pv
+            total_cancel += cancel_pv
+            total_pending += pending_payment
+            total_other += other_status
             info = {}
             info['ministry']        = i['kementerian_name']
             info['actual_pv']       = common.NumberToFormat(actual_pv)
@@ -104,6 +112,13 @@ class PVStatusPerformanceUpdate(PVStatus):
             info['cancel']          = common.NumberToFormat(cancel_pv)
             info['pending_payment'] = common.NumberToFormat(pending_payment)
             data.append(info)
+        data.append({
+            'ministry'          : "Summary",
+            "actual_pv"         : common.NumberToFormat(total_actual),
+            'other_status'      : common.NumberToFormat(total_other),
+            'cancel'            : common.NumberToFormat(total_cancel),
+            'pending_payment'   : common.NumberToFormat(total_pending)
+        })
         output = {
             'tabular': data,
             'pivot': {}

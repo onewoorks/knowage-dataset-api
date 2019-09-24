@@ -1,5 +1,8 @@
 from .. import execute_query
 from . import Common_Query
+
+from datetime import datetime
+
 common_query = Common_Query()
 
 class MYSQL_GM_QUERY():
@@ -120,3 +123,54 @@ class MYSQL_GM_QUERY():
         query   += "ORDER BY org_code"
         resp    = execute_query(query)
         return resp
+
+    def top_ptj(self, top_data = None):
+        query = "SELECT " 
+        query += "group_top_ptj, "
+        query += "ptj_code AS ptj_code, "
+        query += "SUM(target_year) AS target "
+        query += "FROM ep_ref_target_gm "
+        query += "WHERE "
+        query += "YEAR = '2019' "
+        query += "AND (group_top_ptj = 'TOP 01-50' OR group_top_ptj = 'TOP 51-100') "
+        query += "GROUP BY ptj_code"
+        resp = execute_query(query)
+        return resp
+
+    def Read_All_PTJ_Ministry(self):
+        query = "SELECT "
+        query += "ptj_code, ptj_name, kementerian_name "
+        query += "FROM ep_org_profile_ptj"
+        resp = execute_query(query)
+        return resp
+
+    def Read_PTJ_Profile(self):
+        query = "SELECT "
+        query += "org_profile_id, org_code, org_name, state_name "
+        query += "FROM "
+        query += "ep_org_profile "
+        query += "WHERE org_type_id = 5 "\
+            "AND state_name != 'N/A'"
+        return execute_query(query)
+
+    def ReadPVTargetAsNow(self, year = datetime.now().year, month=datetime.now().month):
+        query = " SELECT "
+        query += "group_top_ptj, "
+        query += "ptj_code AS ptj_code, "
+        query += "SUM(target_year) AS target "
+        query += "FROM ep_ref_target_gm "
+        query += "WHERE "
+        query += "YEAR = '{}' ".format(year)
+        query += "AND MONTH <= '{}'".format(month)
+        query +=  "AND (group_top_ptj = 'TOP 01-50' OR group_top_ptj = 'TOP 51-100') "
+        query += "GROUP BY ptj_code"
+        return execute_query(query)
+
+    def pv_status_actual_pv_by_ptj(self):
+        query = "SELECT fl_created_ptj_id AS ptj_id, "
+        query += "SUM(fl_total_amount) AS total "
+        query += "FROM ep_fulfilment "
+        query += "WHERE fl_financial_year = '2019' "
+        query += "AND fl_module IN ('Contract Order','Purchase Order') "
+        query += "GROUP BY fl_created_ptj_id "
+        return execute_query(query) 

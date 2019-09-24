@@ -7,6 +7,7 @@ from ..service.gm.pv_tr_summary import PvTrSummaryPerformanceUpdate
 from ..service.gm.pv_status import PVStatusPerformanceUpdate
 from ..service.gm.target import GM_Target
 from ..service.gm.revenue import GM_Revenue
+from ..service.gm.top_ptj import GM_TopPtj
 
 from ..model.gm_query import GM_Query
 
@@ -106,4 +107,11 @@ class GM_RevenuePivot(Resource):
     def get(self):
         gm_revenue = GM_Revenue()
         data = gm_revenue.Revenue_Pivot()
+        return data
+
+@api.route('/top-ptj')
+class GM_TopPtjRoute(Resource):
+    def get(self):
+        gm_top = GM_TopPtj()
+        data = gm_top.TopPtjList()
         return data
