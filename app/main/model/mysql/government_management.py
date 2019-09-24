@@ -128,7 +128,7 @@ class MYSQL_GM_QUERY():
         query = "SELECT " 
         query += "group_top_ptj, "
         query += "ptj_code AS ptj_code, "
-        query += "SUM(target_year) AS target "
+        query += "target_year AS target "
         query += "FROM ep_ref_target_gm "
         query += "WHERE "
         query += "YEAR = '2019' "
@@ -157,7 +157,7 @@ class MYSQL_GM_QUERY():
         query = " SELECT "
         query += "group_top_ptj, "
         query += "ptj_code AS ptj_code, "
-        query += "SUM(target_year) AS target "
+        query += "SUM(target_month) AS target "
         query += "FROM ep_ref_target_gm "
         query += "WHERE "
         query += "YEAR = '{}' ".format(year)

@@ -68,8 +68,8 @@ class GM_TopPtj():
                 "PTJ NAME"                  : "{} - {}".format(ptj_info['kementerian_name'], ptj_info['ptj_name']),
                 target_year                 : common.NumberToFormat(float(target)),
                 total_target_as_month_year  : common.NumberToFormat(float(current_target)),
-                total_actual_as_month_year  : current_actual_value,
-                variance_as_month_year      : current_actual_value - float(current_target)
+                total_actual_as_month_year  : common.NumberToFormat(float(current_actual_value)),
+                variance_as_month_year      : common.NumberToFormat(float(current_actual_value) - float(current_target))
             }
             detail_top_ptj_100.append(content)
         return detail_top_ptj_100
