@@ -113,5 +113,5 @@ class GM_RevenuePivot(Resource):
 class GM_TopPtjRoute(Resource):
     def get(self):
         gm_top = GM_TopPtj()
-        data = gm_top.TopPtjList()
+        data = gm_top.TopPtjList('birt')
         return data

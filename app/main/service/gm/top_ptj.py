@@ -12,13 +12,15 @@ common = CommonMethod()
 
 class GM_TopPtj():
     
-    def TopPtjList(self):
+    def TopPtjList(self, mode = 'birt'):
         ws_name = "GM_PTJ_TOP_100"
         existed = gm_query.Get_Latest_WS(ws_name)
         if len(existed) > 0:
             dataset = json.loads(existed[0]['ws_data'])
         else:
             dataset = self.__CreateWSData()
+        if mode == 'birt':
+            dataset = self.__BirtDataset(dataset)
         return dataset
 
     def __PtjProfile(self):
@@ -98,3 +100,15 @@ class GM_TopPtj():
         }
         gm_query.create_new_ws(input)
         return dataset
+
+    def __BirtDataset(self, dataset):
+        birt_dataset = []   
+        for index,p in enumerate(dataset):
+            start_no = 100
+            content = {}
+            for col in p:
+                content[start_no] = p[col] if index > 0 else col
+                start_no += 1
+            birt_dataset.append(content)
+            
+        return birt_dataset
