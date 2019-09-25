@@ -115,3 +115,10 @@ class GM_TopPtjRoute(Resource):
         gm_top = GM_TopPtj()
         data = gm_top.TopPtjList('birt')
         return data
+    
+@api.route('/top-ptj-summary')
+class GM_TopPtjSummaryRoute(Resource):
+    def get(self):
+        summary = GM_TopPtj()
+        data = summary.TopPtjListSummary()
+        return data

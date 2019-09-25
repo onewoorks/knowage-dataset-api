@@ -10,17 +10,30 @@ import json
 gm_query = MYSQL_GM_QUERY()
 common = CommonMethod()
 
-class GM_TopPtj():
+class TOP_PTJ_SETTER:
+    WS_NAME = {
+        "PTJ_TOP_100" : "GM_PTJ_TOP_100"
+    }
+
+class GM_TopPtj(TOP_PTJ_SETTER):
     
     def TopPtjList(self, mode = 'birt'):
-        ws_name = "GM_PTJ_TOP_100"
+        dataset = self.__CheckWS()
+        if mode == 'birt':
+            dataset = self.__BirtDataset(dataset)
+        return dataset
+
+    def TopPtjListSummary(self):
+        dataset = self.__DatasetSummary(self.__CheckWS())
+        return dataset
+
+    def __CheckWS(self):
+        ws_name = self.WS_NAME['PTJ_TOP_100']
         existed = gm_query.Get_Latest_WS(ws_name)
         if len(existed) > 0:
             dataset = json.loads(existed[0]['ws_data'])
         else:
             dataset = self.__CreateWSData()
-        if mode == 'birt':
-            dataset = self.__BirtDataset(dataset)
         return dataset
 
     def __PtjProfile(self):
@@ -112,3 +125,38 @@ class GM_TopPtj():
             birt_dataset.append(content)
             
         return birt_dataset
+    
+    def __ZoneStateSummary(self, dataset):
+        df_zs_s = dict(tuple(dataset.groupby('ZONE')))
+        data_zone_state = []
+        for i in df_zs_s:
+            content = {}
+            content['ZONE'] = i.upper()
+            content['STATES'] = []
+            states = dict(tuple(df_zs_s[i].groupby('PTJ STATE')))
+            for ss in states:
+                content_1 = {}
+                content_1['PTJ STATE'] = ss
+                for sss in states[ss]:
+                    content_1[sss] = "{0:.2f}".format(states[ss][sss].values[0])
+                content['STATES'].append(content_1)
+            data_zone_state.append(content)
+
+        return data_zone_state
+    
+    def __DatasetSummary(self, dataset):
+        df = pd.DataFrame(dataset)
+        df_loc = df.iloc[:,2:-1]
+        for l in df_loc:
+            df[l] = df[l].apply(lambda x : x.replace(',','')).astype('float')
+        new_columns_order = [6,1,0,2,3,4,5]
+        df              = df[df.columns[new_columns_order]]
+        by_zone         = df.groupby('ZONE').sum().round(2)
+        by_state        = df.groupby('PTJ STATE').sum().round(2)
+        by_zone_state   = df.groupby(['ZONE','PTJ STATE']).sum().round(2)
+        summary = {
+            "by_zone"       : by_zone.to_dict('records'),
+            "by_state"      : by_state.to_dict('records'),
+            "by_zone_state" : self.__ZoneStateSummary(by_zone_state)
+        }
+        return summary
