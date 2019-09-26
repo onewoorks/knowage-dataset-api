@@ -184,13 +184,45 @@ class GM_TopPtj(TOP_PTJ_SETTER):
                                     "target d" : "6"
                                 },
                                 {
-                                    "zone": "KV",
-                                    "ptj" : "ptj d",
+                                    "zone": "OKV",
+                                    "ptj" : "ptj z",
+                                    "target a" : "71",
+                                    "target b" : "40",
+                                    "target c" : "32",
+                                    "target d" : "8"
+                                },
+                                {
+                                    "zone": "OKV",
+                                    "ptj" : "ptj x",
+                                    "target a" : "20",
+                                    "target b" : "10",
+                                    "target c" : "9",
+                                    "target d" : "1"
+                                },
+                                {
+                                    "zone": "OKV",
+                                    "ptj" : "ptj j",
+                                    "target a" : "60",
+                                    "target b" : "50",
+                                    "target c" : "21",
+                                    "target d" : "29"
+                                },
+                                {
+                                    "zone": "EM",
+                                    "ptj" : "ptj k",
+                                    "target a" : "24",
+                                    "target b" : "15",
+                                    "target c" : "9",
+                                    "target d" : "6"
+                                },
+                                {
+                                    "zone": "EM",
+                                    "ptj" : "ptj l",
                                     "target a" : "71",
                                     "target b" : "40",
                                     "target c" : "32",
                                     "target d" : "8"
                                 }
-                                ]
+                            ]
         }
         return summary
