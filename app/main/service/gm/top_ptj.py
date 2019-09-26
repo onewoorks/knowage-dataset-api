@@ -157,6 +157,40 @@ class GM_TopPtj(TOP_PTJ_SETTER):
         summary = {
             "by_zone"       : by_zone.to_dict('records'),
             "by_state"      : by_state.to_dict('records'),
-            "by_zone_state" : self.__ZoneStateSummary(by_zone_state)
+            "by_zone_state" : self.__ZoneStateSummary(by_zone_state),
+            "test_je"       : [
+                                {
+                                    "zone": "KV",
+                                    "ptj" : "ptj a",
+                                    "target a" : "20",
+                                    "target b" : "10",
+                                    "target c" : "9",
+                                    "target d" : "1"
+                                },
+                                {
+                                    "zone": "KV",
+                                    "ptj" : "ptj a",
+                                    "target a" : "20",
+                                    "target b" : "10",
+                                    "target c" : "9",
+                                    "target d" : "1"
+                                },
+                                {
+                                    "zone": "KV",
+                                    "ptj" : "ptj a",
+                                    "target a" : "20",
+                                    "target b" : "10",
+                                    "target c" : "9",
+                                    "target d" : "1"
+                                },
+                                {
+                                    "zone": "KV",
+                                    "ptj" : "ptj a",
+                                    "target a" : "20",
+                                    "target b" : "10",
+                                    "target c" : "9",
+                                    "target d" : "1"
+                                }
+                                ]
         }
         return summary
