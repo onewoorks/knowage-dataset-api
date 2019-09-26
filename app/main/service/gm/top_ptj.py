@@ -169,27 +169,27 @@ class GM_TopPtj(TOP_PTJ_SETTER):
                                 },
                                 {
                                     "zone": "KV",
-                                    "ptj" : "ptj a",
-                                    "target a" : "20",
-                                    "target b" : "10",
-                                    "target c" : "9",
-                                    "target d" : "1"
+                                    "ptj" : "ptj b",
+                                    "target a" : "60",
+                                    "target b" : "50",
+                                    "target c" : "21",
+                                    "target d" : "29"
                                 },
                                 {
                                     "zone": "KV",
-                                    "ptj" : "ptj a",
-                                    "target a" : "20",
-                                    "target b" : "10",
+                                    "ptj" : "ptj c",
+                                    "target a" : "24",
+                                    "target b" : "15",
                                     "target c" : "9",
-                                    "target d" : "1"
+                                    "target d" : "6"
                                 },
                                 {
                                     "zone": "KV",
-                                    "ptj" : "ptj a",
-                                    "target a" : "20",
-                                    "target b" : "10",
-                                    "target c" : "9",
-                                    "target d" : "1"
+                                    "ptj" : "ptj d",
+                                    "target a" : "71",
+                                    "target b" : "40",
+                                    "target c" : "32",
+                                    "target d" : "8"
                                 }
                                 ]
         }
