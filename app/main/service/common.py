@@ -77,3 +77,6 @@ class CommonMethod:
 
     def NumberToFormat(self, value):
         return "{:,.2f}".format(value)
+    
+    def NumberFixedDecimal(self, value, decimal = 2):
+        return round(value, decimal)
