@@ -1,5 +1,5 @@
-import requests
-import flask 
+
+from flask import request
 
 from flask_restplus import Namespace, Resource
 from ..service.gm.contribution_of_pv import ContributionOfPVPerformanceUpdate
@@ -119,8 +119,9 @@ class GM_TopPtjRoute(Resource):
     
 @api.route('/top-ptj-summary')
 class GM_TopPtjSummaryRoute(Resource):
-    def get(self):
-        print(flask.request.args.get("name"))
+    def post(self):
+        # print(flask.request.args.get("name"))
         summary = GM_TopPtj()
+        print(request.json)
         data = summary.TopPtjListSummary()
         return data
