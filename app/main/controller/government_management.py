@@ -1,7 +1,7 @@
 
 from flask import request
 
-from flask_restplus import Namespace, Resource
+from flask_restplus import Namespace, Resource, fields
 from ..service.gm.contribution_of_pv import ContributionOfPVPerformanceUpdate
 from ..service.gm.pending_payment_cycle import PendingPaymentCyclePerformanceUpdate
 from ..service.gm.pv_tr_summary import PvTrSummaryPerformanceUpdate
@@ -117,8 +117,12 @@ class GM_TopPtjRoute(Resource):
         data = gm_top.TopPtjList('birt')
         return data
     
+info_jualan = api.model('Maklumat Jualan',{
+    "zone": fields.String() 
+})
 @api.route('/top-ptj-summary')
 class GM_TopPtjSummaryRoute(Resource):
+    @api.doc(parser=info_jualan)
     def post(self):
         # print(flask.request.args.get("name"))
         summary = GM_TopPtj()
