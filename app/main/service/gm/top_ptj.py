@@ -144,17 +144,14 @@ class GM_TopPtj(TOP_PTJ_SETTER):
         df_zs_s = dict(tuple(dataset.groupby('ZONE')))
         data_zone_state = []
         for i in df_zs_s:
-            content = {}
-            content['ZONE'] = i.upper()
-            content['STATES'] = []
             states = dict(tuple(df_zs_s[i].groupby('PTJ STATE')))
             for ss in states:
-                content_1 = {}
-                content_1['PTJ STATE'] = ss
+                content = {}
+                content['ZONE'] = i.upper()
+                content['PTJ STATE'] = ss
                 for sss in states[ss]:
-                    content_1[sss] = "{0:.2f}".format(states[ss][sss].values[0])
-                content['STATES'].append(content_1)
-            data_zone_state.append(content)
+                    content[sss] = "{0:.2f}".format(states[ss][sss].values[0])
+                data_zone_state.append(content)
 
         return data_zone_state
     

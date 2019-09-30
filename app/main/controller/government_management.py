@@ -116,16 +116,11 @@ class GM_TopPtjRoute(Resource):
         gm_top = GM_TopPtj()
         data = gm_top.TopPtjList('birt')
         return data
-    
-info_jualan = api.model('Maklumat Jualan',{
-    "zone": fields.String() 
-})
+
 @api.route('/top-ptj-summary')
 class GM_TopPtjSummaryRoute(Resource):
-    @api.doc(parser=info_jualan)
-    def post(self):
+    def get(self):
         # print(flask.request.args.get("name"))
         summary = GM_TopPtj()
-        print(request.json)
         data = summary.TopPtjListSummary()
         return data
