@@ -31,7 +31,7 @@ class RazorPayServices:
 
         for r in raw.to_dict('records'):
             payloads = {
-                "date" : r['Date'].s,
+                "date" : r['Date'],
                 "billing_name" : r['Billing Name'],
                 "amount" : r['Bill Amt'],
                 "payment_type" : "REGISTRATION" if r['Bill Amt'] == 400 else "RENEWAL"
