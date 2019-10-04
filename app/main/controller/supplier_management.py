@@ -73,7 +73,7 @@ class RazorPayConsolidationRoute(Resource):
         args = file_upload.parse_args()
         if args['xls_file'].mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
             file_name =  args['xls_file'].filename
-            xls_file = '%s%s' % (os.getcwd()+'\\upload_media\\', file_name)
+            xls_file = '%s%s' % (os.getcwd()+'/upload_media/', file_name)
             args['xls_file'].save(xls_file)
             RazorPayServices().ProcessUploadFile(file_name)
         return {'status': 'Done'}
