@@ -1,10 +1,21 @@
 from datetime import datetime
 
-from flask_restplus import Namespace, Resource
+import werkzeug
+import os
+from flask_restplus import Namespace, Resource, reqparse
 from ..service.sm_performance_update import SM_Performance_Update
+from ..service.sm.razorpay import RazorPayServices
+
 api = Namespace('SM', 'Summary dataset of performance update for Supplier Management')
 
 sm_pu = SM_Performance_Update()
+
+file_upload = reqparse.RequestParser()
+file_upload.add_argument('xls_file',  
+                         type=werkzeug.datastructures.FileStorage, 
+                         location='files', 
+                         required=True, 
+                         help='XLS file')
 
 @api.route('/supplier-revenue-summary/mof-registration')
 class SupplierRevenueSummary(Resource):
@@ -50,7 +61,19 @@ class DashboardSummaryModule(Resource):
         return data
 
 @api.route('/prediction/lr')
-class PredictionLR(Resource):
+class PredictionLRRoute(Resource):
     def get(self):
         data = sm_pu.MOF_Predict()
         return data
+
+@api.route('/razorpay-consolidation')
+class RazorPayConsolidationRoute(Resource):
+    @api.expect(file_upload)
+    def post(self):
+        args = file_upload.parse_args()
+        if args['xls_file'].mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+            file_name =  args['xls_file'].filename
+            xls_file = '%s%s' % (os.getcwd()+'\\upload_media\\', file_name)
+            args['xls_file'].save(xls_file)
+            RazorPayServices().ProcessUploadFile(file_name)
+        return {'status': 'Done'}
