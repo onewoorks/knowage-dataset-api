@@ -5,7 +5,7 @@ from ...model.mysql.supplier_management import SupplierManagementModel
 class RazorPayServices:
 
     def ProcessUploadFile(self, filename):
-        data_files = os.getcwd()+'\\upload_media\\' + filename
+        data_files = os.getcwd()+'/upload_media/' + filename
 
         raw_data = pd.ExcelFile(data_files)
         raw_data.sheet_names
