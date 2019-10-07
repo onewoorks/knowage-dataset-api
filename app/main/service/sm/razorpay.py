@@ -31,10 +31,12 @@ class RazorPayServices:
 
         for r in raw.to_dict('records'):
             payloads = {
-                "date" : r['Date'],
-                "billing_name" : r['Billing Name'],
-                "amount" : r['Bill Amt'],
-                "payment_type" : "REGISTRATION" if r['Bill Amt'] == 400 else "RENEWAL"
+                "date"          : r['Date'],
+                "billing_name"  : r['Billing Name'],
+                "amount"        : r['Bill Amt'],
+                "payment_type"  : "REGISTRATION" if r['Bill Amt'] == 400 else "RENEWAL",
+                "status"        : r['Status'].upper()
             } 
             SupplierManagementModel().CreateNewRazorPayTransaction(payloads)
+            os.remove(data_files)
         return molpay_data
