@@ -77,5 +77,5 @@ class RazorPayConsolidationRoute(Resource):
             xls_file = '%s%s' % (os.getcwd()+'/upload_media/', file_name)
             args['xls_file'].save(xls_file)
             data = RazorPayServices().ProcessUploadFile(file_name)
-            
+            print(data)
             return data
