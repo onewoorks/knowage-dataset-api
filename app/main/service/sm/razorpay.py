@@ -40,4 +40,5 @@ class RazorPayServices:
             SupplierManagementModel().CreateNewRazorPayTransaction(payloads)
         
         os.remove(data_files)
+        print(molpay_data)
         return molpay_data
