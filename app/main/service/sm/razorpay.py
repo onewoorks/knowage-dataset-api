@@ -38,5 +38,4 @@ class RazorPayServices:
                 "status"        : r['Status'].upper()
             } 
             SupplierManagementModel().CreateNewRazorPayTransaction(payloads)
-            os.remove(data_files)
         return molpay_data
