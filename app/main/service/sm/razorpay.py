@@ -35,7 +35,7 @@ class RazorPayServices:
                 "billing_name"  : r['Billing Name'],
                 "amount"        : r['Bill Amt'],
                 "payment_type"  : "REGISTRATION" if r['Bill Amt'] == 400 else "RENEWAL",
-                "status"        : r['Status'].upper()
+                "status"        : r['Status']
             } 
             SupplierManagementModel().CreateNewRazorPayTransaction(payloads)
         
