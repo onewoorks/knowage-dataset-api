@@ -5,6 +5,7 @@ from datetime import date, datetime
 from .common import CommonMethod
 from ..model.sm_query import SM_Query
 from ..model.oracle.supplier_management import ORACLE_SM_QUERY
+from ..model.mysql.supplier_management import SupplierManagementModel
 from ..model.common import Common_Query
 
 from .predictions.linear_regression import Lr_Predict
@@ -13,6 +14,7 @@ common = CommonMethod()
 sm_query = SM_Query()
 oracle_sm_query = ORACLE_SM_QUERY()
 common_query = Common_Query()
+mysql_sm_query = SupplierManagementModel()
 
 class SM_Performance_Setter:
     SOFTCERT_SUMMARY = (
@@ -207,7 +209,7 @@ class SM_Performance_Update(SM_Performance_Setter):
         index = 1
         for i in working_days:
             if "null-" not in i:
-                content[no] = int((month_target - actual_cummulative[no])/(working_days_in_month-1)) if actual_cummulative[no] != "" else ""
+                content[no] = int((month_target - actual_cummulative[no])/(working_days_in_month)) if actual_cummulative[no] != "" else ""
                 working_days_in_month -= 1
             else:
                 content[no] = ""
@@ -229,8 +231,10 @@ class SM_Performance_Update(SM_Performance_Setter):
         target_renew = self.content_builder('Target Renew', sm_query.union_supplier_revenue(working_days, 'TARGET_RENEW_SUPPLIER_WORKING_DAY'))
         total_daily_target = self.total_daily('total', 'Total Daily Target', working_days, target_new, target_renew)
         total_commulative_target = self.total_commulative('commulative', 'Total Commulative Target', working_days, target_new, target_renew)
-        actual_new = self.content_builder('Actual New', oracle_sm_query.ora_actual_supplier_revenue(working_days, 'N'), 1)
-        actual_renew = self.content_builder('Actual Renew', oracle_sm_query.ora_actual_supplier_revenue(working_days, 'R'), 1)
+        # actual_new = self.content_builder('Actual New', oracle_sm_query.ora_actual_supplier_revenue(working_days, 'N'), 1)
+        # actual_renew = self.content_builder('Actual Renew', oracle_sm_query.ora_actual_supplier_revenue(working_days, 'R'), 1)
+        actual_new = self.content_builder('Actual New', mysql_sm_query.ActualSupplierRevenue(working_days, 'N'), 1)
+        actual_renew = self.content_builder('Actual Renew', mysql_sm_query.ActualSupplierRevenue(working_days, 'R'), 1)
         total_daily_actual = self.total_daily('total', 'Total Daily Actual', working_days, actual_new, actual_renew)
         total_commulative_actual = self.total_commulative('commulative', 'Total Commulative Actual', working_days, actual_new, actual_renew)
         variance_new = self.variance('Variance New', working_days, actual_new, target_new)
@@ -467,7 +471,6 @@ class SM_Performance_Update(SM_Performance_Setter):
         return data
 
     def MOF_Predict(self, working_days, total_actual_cummulative):
-        print(total_actual_cummulative)
         work_days = []
         day = 1
         for k in working_days:

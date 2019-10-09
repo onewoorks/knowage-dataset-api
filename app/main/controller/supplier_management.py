@@ -2,20 +2,18 @@ from datetime import datetime
 
 import werkzeug
 import os
+import flask 
+
+from flask import request
+from flask import current_app as app
 from flask_restplus import Namespace, Resource, reqparse
 from ..service.sm_performance_update import SM_Performance_Update
-from ..service.sm.razorpay import RazorPayServices
+from ..service.sm.razerpay import RazerPayServices
 
 api = Namespace('SM', 'Summary dataset of performance update for Supplier Management')
 
 sm_pu = SM_Performance_Update()
-
-file_upload = reqparse.RequestParser()
-file_upload.add_argument('xls_file',  
-                         type=werkzeug.datastructures.FileStorage, 
-                         location='files', 
-                         required=True, 
-                         help='XLS file')
+cors_allow_origin = {'Access-Control-Allow-Origin': '*'}
 
 @api.route('/supplier-revenue-summary/mof-registration')
 class SupplierRevenueSummary(Resource):
@@ -66,15 +64,37 @@ class PredictionLRRoute(Resource):
         data = sm_pu.MOF_Predict()
         return data
 
-@api.route('/razorpay-consolidation')
+
+file_upload = reqparse.RequestParser()
+file_upload.add_argument('razer_file',  
+                         type=werkzeug.datastructures.FileStorage, 
+                         location='files', 
+                         required=True, 
+                         help='Razer Transaction file is required!')
+@api.route('/razerpay-consolidation')
 class RazorPayConsolidationRoute(Resource):
     @api.expect(file_upload)
     def post(self):
-        
-        args = file_upload.parse_args()
-        if args['xls_file'].mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-            file_name =  args['xls_file'].filename
-            xls_file = '%s%s' % (os.getcwd()+'/upload_media/', file_name)
-            args['xls_file'].save(xls_file)
-            data = RazorPayServices().ProcessUploadFile(file_name)
-            return data
+        args        = file_upload.parse_args()
+        razer_file  = 'razer_file'
+        if args[razer_file].mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+            file_name   =  args[razer_file].filename
+            user_profile = request.form.to_dict()['user_profile']
+            xls_file    = '%s%s' % (os.getcwd() + app.config['UPLOAD_MEDIA'], file_name)
+            args[razer_file].save(xls_file)
+            data        = RazerPayServices().ProcessUploadFile(xls_file, user_profile)
+            return data,  200, cors_allow_origin
+        else:
+            return { "status" : "error..."}
+
+@api.route('/razerpay-upload-history')
+class RazerPayUploadHistoryRoute(Resource):
+    def get(self):
+        data = RazerPayServices().UploadHistory()
+        return data
+
+@api.route('/razerpay-transaction-detail/<razer_id>')
+class RazerPayTransactionDetailRoute(Resource):
+    def get(self, razer_id):
+        data = RazerPayServices().ReadTransactionDetail(razer_id)
+        return data
