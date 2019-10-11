@@ -75,6 +75,7 @@ file_upload.add_argument('razer_file',
 class RazorPayConsolidationRoute(Resource):
     @api.expect(file_upload)
     def post(self):
+        print(request.form.to_dict())
         args        = file_upload.parse_args()
         razer_file  = 'razer_file'
         if args[razer_file].mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
