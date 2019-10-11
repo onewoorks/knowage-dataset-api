@@ -45,13 +45,11 @@ class SupplierManagementModel:
         return execute_query(query)
     
     def CreateBulkTransaction(self, csv_file):
-        query = "LOAD DATA LOCAL INFILE '{}' ".format(csv_file)
+        query = "LOAD DATA LOCAL INFILE '{}' ".format(csv_file.encode())
         query += "INTO TABLE razorpay_transaction "
-        query += "(DATE,billing_name,amount,payment_type, STATUS, order_id) "
-        query += "FIELDS TERMINATED BY ',' "
-        query += "ENCLOSED BY '\"' "
-        query += "LINES TERMINATED BY '\r\n' "
-        query += "IGNORE 1 LINES;"
+        query += "FIELDS TERMINATED BY ',' ENCLOSED BY '\"' "
+        query += "LINES TERMINATED BY '\r\n' IGNORE 1 LINES "
+        query += "(`DATE`,`billing_name`,`amount`, `payment_type`, `STATUS`, `order_id`) " 
         print(query)
         return mysql_insert_query(query)
 

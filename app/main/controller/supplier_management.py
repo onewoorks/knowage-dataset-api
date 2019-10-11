@@ -99,7 +99,6 @@ class RazerPayTransactionDetailRoute(Resource):
         data = RazerPayServices().ReadTransactionDetail(razer_id)
         return data
 
-
 @api.route('/razerpay-transaction-overwrite')
 class RazerPayTransactionOverwriteRoute(Resource):
     def post(self):

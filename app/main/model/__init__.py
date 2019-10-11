@@ -16,7 +16,7 @@ def execute_query(query):
         db=DB_DBASE,
         charset="utf8mb4",
         cursorclass=pymysql.cursors.DictCursor,
-        autocommit=True)
+        autocommit=True,)
     cursor = db.cursor()
     cursor.execute(query)
     data = cursor.fetchall()
@@ -30,7 +30,8 @@ def mysql_insert_query(query):
         db=DB_DBASE,
         charset="utf8mb4",
         cursorclass=pymysql.cursors.DictCursor,
-        autocommit=True)
+        autocommit=True,
+        local_infile=1)
     cursor = db.cursor()
     cursor.execute(query)
 
