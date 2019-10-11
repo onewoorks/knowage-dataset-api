@@ -45,7 +45,7 @@ class SupplierManagementModel:
         return execute_query(query)
     
     def CreateBulkTransaction(self, csv_file):
-        query = "LOAD DATA LOCAL INFILE '{}' ".format(csv_file.encode())
+        query = "LOAD DATA LOCAL INFILE '{}' ".format(csv_file)
         query += "INTO TABLE razorpay_transaction "
         query += "FIELDS TERMINATED BY ',' ENCLOSED BY '\"' "
         query += "LINES TERMINATED BY '\r\n' IGNORE 1 LINES "
