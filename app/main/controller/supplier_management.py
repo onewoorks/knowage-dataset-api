@@ -2,7 +2,7 @@ from datetime import datetime
 
 import werkzeug
 import os
-import flask 
+import flask, json
 
 from flask import request
 from flask import current_app as app
@@ -97,4 +97,12 @@ class RazerPayUploadHistoryRoute(Resource):
 class RazerPayTransactionDetailRoute(Resource):
     def get(self, razer_id):
         data = RazerPayServices().ReadTransactionDetail(razer_id)
+        return data
+
+
+@api.route('/razerpay-transaction-overwrite')
+class RazerPayTransactionOverwriteRoute(Resource):
+    def post(self):
+        input_data  = json.loads(request.data)
+        data = RazerPayServices().RazerTransactionOverwrite(filename=input_data['filename'], user_profile=input_data['user_profile'])
         return data

@@ -15,6 +15,8 @@ app.config.from_pyfile(config_file)
 
 if not Path(app.config['UPLOAD_MEDIA']).exists():
     os.mkdir(app.config['UPLOAD_MEDIA'])
+if not Path(app.config['TMP_FOLDER']).exists():
+    os.mkdir(app.config['TMP_FOLDER'])
 
 api.init_app(app)
 app.run(debug=True,host="0.0.0.0") 

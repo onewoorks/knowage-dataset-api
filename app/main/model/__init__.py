@@ -15,7 +15,8 @@ def execute_query(query):
         password=DB_PASS,
         db=DB_DBASE,
         charset="utf8mb4",
-        cursorclass=pymysql.cursors.DictCursor)
+        cursorclass=pymysql.cursors.DictCursor,
+        autocommit=True)
     cursor = db.cursor()
     cursor.execute(query)
     data = cursor.fetchall()

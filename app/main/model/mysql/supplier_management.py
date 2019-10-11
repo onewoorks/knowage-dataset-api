@@ -20,6 +20,11 @@ class SupplierManagementModel:
         query += "'{}' ".format(payloads['order_id'])
         query += ")"
         mysql_insert_query(query)
+    
+    def DeleteRazerTransaction(self, date):
+        query = "DELETE FROM razorpay_transaction "
+        query += "WHERE DATE(date) = '{}' ".format(date)
+        execute_query(query)
 
     def ReadRazerPayUploadHistory(self, rows = 30):
         query = "SELECT * FROM razorpay_upload_history ORDER BY id DESC LIMIT {}".format(rows)
@@ -28,6 +33,27 @@ class SupplierManagementModel:
     def ReadRazerPayTransactionDetail(self, razer_id):
         query = "SELECT * FROM razorpay_upload_history WHERE id = {}".format(int(razer_id))
         return execute_query(query)
+
+    def ReadRazerPayTransactionDate(self, date):
+        query = "SELECT " 
+        query += "DATE(date) as date, STATUS, COUNT(id) as quantity, "
+        query += "SUM(IF(payment_type=\"RENEWAL\",amount,0)) AS 'renewal', "
+        query += "SUM(IF(payment_type=\"REGISTRATION\",amount,0)) AS 'registration', "
+        query += "SUM(amount) AS total_collection "
+        query += "FROM razorpay_transaction WHERE DATE(date) = '{}' ".format(date)
+        query += "GROUP BY status; "
+        return execute_query(query)
+    
+    def CreateBulkTransaction(self, csv_file):
+        query = "LOAD DATA LOCAL INFILE '{}' ".format(csv_file)
+        query += "INTO TABLE razorpay_transaction "
+        query += "(DATE,billing_name,amount,payment_type, STATUS, order_id) "
+        query += "FIELDS TERMINATED BY ',' "
+        query += "ENCLOSED BY '\"' "
+        query += "LINES TERMINATED BY '\r\n' "
+        query += "IGNORE 1 LINES;"
+        print(query)
+        return mysql_insert_query(query)
 
     def ActualSupplierRevenue(self,working_days,appl_type):
         query = ""

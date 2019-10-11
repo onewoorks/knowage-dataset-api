@@ -1,4 +1,4 @@
-import os, json
+import os, json, csv
 import pandas as pd 
 from flask import current_app as app
 
@@ -28,33 +28,52 @@ class RazerPayServices:
         upload_path = os.getcwd() + app.config['UPLOAD_MEDIA']
         payloads = {
             "filename": filename.split(upload_path)[-1],
-            "user_profile": user_profile,
+            "user_profile": json.dumps(user_profile),
             "summary": summary
         }
         SupplierManagementModel().CreateRazorFileUpload(payloads)
+    
+    def __CheckTransactionDate(self, date):
+        existed = SupplierManagementModel().ReadRazerPayTransactionDate(date)
+        return existed if len(existed) > 0 else False
 
-    def ProcessUploadFile(self, filename, user_profile = None):
-        raw_data = pd.ExcelFile(filename)
-        raw_data.sheet_names
- 
-        raw = raw_data.parse('Sheet1')
-
-        raw['Date'][0]
-
-        df = pd.DataFrame(raw)
-        molpay_data = {
-            "date": raw['Date'][0].split(' ')[0]
+    def __ExistedData(self, payloads):
+        result = {
+            "date"  : str(payloads[0]['date'])
         }
+        for data in payloads:
+            result[data['STATUS'] + '_register']    = float(data['registration'])
+            result[data['STATUS'] + '_renew']       = float(data['renewal'])
+            result[data['STATUS'] + '_count']       = int(data['quantity'])
+            result[data['STATUS'] + '_total']       = float(data['total_collection'])
+        return result
+
+    def RazerTransactionOverwrite(self, filename, user_profile):
+        file_path = os.getcwd() + app.config['UPLOAD_MEDIA'] + filename
+        raw_data = pd.ExcelFile(file_path)
+        raw_data.sheet_names
+        raw = raw_data.parse('Sheet1')
+        SupplierManagementModel().DeleteRazerTransaction(raw['Date'][0].split(' ')[0])
+        response = self.__TransactionInfo(raw=raw,filename= file_path, user_profile= user_profile )
+        return response
+
+    def __TransactionInfo(self, raw, filename, user_profile):
+        raw['Date'][0]
+        df = pd.DataFrame(raw)
+        response = {}
+        response['date'] = raw['Date'][0].split(' ')[0]
         for stat in df.groupby('Status').count().index :
             total       = df[(df['Status'] == stat)].sum()['Bill Amt']
             count       = df[(df['Status'] == stat)].count()['Bill Amt']
             register    = df[(df['Status'] == stat) & (df['Bill Amt'] == 400 )].sum()['Bill Amt']
             renew       = df[(df['Status'] == stat) & (df['Bill Amt'] == 50 )].sum()['Bill Amt']
-            molpay_data[stat+"_count"] = str(count)
-            molpay_data[stat+"_total"] = str(total)
-            molpay_data[stat+"_register"] = str(register)
-            molpay_data[stat+"_renew"] = str(renew)
-
+            response[stat+"_count"]     = str(count)
+            response[stat+"_total"]     = str(total)
+            response[stat+"_register"]  = str(register)
+            response[stat+"_renew"]     = str(renew)
+            response['status']          = 800
+        
+        to_csv = []
         for r in raw.to_dict('records'):
             payloads = {
                 "date"          : r['Date'],
@@ -64,7 +83,37 @@ class RazerPayServices:
                 "status"        : r['Status'],
                 "order_id"      : r['Order ID']
             } 
-            SupplierManagementModel().CreateNewRazorPayTransaction(payloads)
-        self.__RegisterNewUpload(filename, user_profile, json.dumps(molpay_data))
+            to_csv.append(payloads)
+            # SupplierManagementModel().CreateNewRazorPayTransaction(payloads)
+        self.__RegisterNewUpload(filename, user_profile, json.dumps(response))
+        self.__WriteCSVUploadDelete('razer_transaction', to_csv)
         os.remove(filename)
-        return molpay_data
+        return response
+
+    def ProcessUploadFile(self, filename, user_profile = None):
+        raw_data = pd.ExcelFile(filename)
+        raw_data.sheet_names
+        raw = raw_data.parse('Sheet1')
+        existed = self.__CheckTransactionDate(raw['Date'][0].split(' ')[0])
+        response = {}
+        if not existed:
+            response = self.__TransactionInfo(raw = raw, filename= filename, user_profile=json.loads(user_profile))
+        else:
+            upload_path = os.getcwd() + app.config['UPLOAD_MEDIA']
+            response["status"]          = 809
+            response['message']         = "Transaction date already existed"
+            response['existed_data']    = self.__ExistedData(existed)
+            response['filename']        = filename.split(upload_path)[-1]
+            response['user_profile']    = json.loads(user_profile)
+        
+        return response
+    
+    def __WriteCSVUploadDelete(self, to_filename, payloads):
+        file_path =  os.getcwd() + app.config['TMP_FOLDER'] + to_filename + ".csv"
+        headers = payloads[0].keys()
+        with open(file_path, 'w', newline='', encoding='utf-8') as output_file:
+            dict_writer = csv.DictWriter(output_file, headers,quoting=csv.QUOTE_ALL)
+            dict_writer.writeheader()
+            dict_writer.writerows(payloads)
+        
+        SupplierManagementModel().CreateBulkTransaction(file_path)
