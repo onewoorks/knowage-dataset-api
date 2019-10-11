@@ -114,5 +114,20 @@ class RazerPayServices:
             dict_writer = csv.DictWriter(output_file, headers,quoting=csv.QUOTE_ALL)
             dict_writer.writeheader()
             dict_writer.writerows(payloads)
-        
         SupplierManagementModel().CreateBulkTransaction(file_path)
+
+    def ReadMonthTransactionSummary(self, month = None, year = None):
+        data = SupplierManagementModel().ReadTransactionSummaryByMonth('10','2019')
+        response = []
+        for d in data:
+            content = {
+                "day"               : str(d['day']),
+                "captured_amount"   : float(d['captured_amount']),
+                "captured_count"    : int(d['captured_count']),
+                "failed_amount"     : float(d['failed_amount']),
+                "failed_count"      : int(d['failed_count']),
+                "blocked_amount"    : float(d['blocked_amount']),
+                "blocked_count"     : int(d['blocked_count'])
+            }
+            response.append(content)
+        return response

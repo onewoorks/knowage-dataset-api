@@ -50,8 +50,20 @@ class SupplierManagementModel:
         query += "FIELDS TERMINATED BY ',' ENCLOSED BY '\"' "
         query += "LINES TERMINATED BY '\r\n' IGNORE 1 LINES "
         query += "(`DATE`,`billing_name`,`amount`, `payment_type`, `STATUS`, `order_id`) " 
-        print(query)
         return mysql_insert_query(query)
+    
+    def ReadTransactionSummaryByMonth(self, month = None, year = None):
+        query = "SELECT "
+        query += "DATE_FORMAT(DATE,'%d') AS day, "
+        query += "SUM(IF(STATUS = 'captured',amount,0)) AS captured_amount, "
+        query += "SUM(IF(STATUS = 'captured',1,0)) AS captured_count, "
+        query += "SUM(IF(STATUS = 'failed',amount,0)) AS failed_amount, "
+        query += "SUM(IF(STATUS = 'failed',1,0)) AS failed_count, "
+        query += "SUM(IF(STATUS = 'blocked',amount,0)) AS blocked_amount, "
+        query += "SUM(IF(STATUS = 'blocked',1,0)) AS blocked_count "
+        query += "FROM razorpay_transaction WHERE MONTH(DATE) = '{}' AND YEAR(DATE) = '{}' ".format(month if month is not None else "MONTH(now)", year if year is not None else "YEAR(now)")
+        query += "GROUP BY DAY(DATE)"
+        return execute_query(query)
 
     def ActualSupplierRevenue(self,working_days,appl_type):
         query = ""

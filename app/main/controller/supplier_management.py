@@ -106,3 +106,9 @@ class RazerPayTransactionOverwriteRoute(Resource):
         input_data  = json.loads(request.data)
         data = RazerPayServices().RazerTransactionOverwrite(filename=input_data['filename'], user_profile=input_data['user_profile'])
         return data
+    
+@api.route('/razerpay-summary')
+class RazerPaySummaryRoute(Resource):
+    def get(self):
+        data = RazerPayServices().ReadMonthTransactionSummary()
+        return data
