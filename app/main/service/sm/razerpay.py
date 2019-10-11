@@ -84,7 +84,6 @@ class RazerPayServices:
                 "order_id"      : r['Order ID']
             } 
             to_csv.append(payloads)
-            # SupplierManagementModel().CreateNewRazorPayTransaction(payloads)
         self.__RegisterNewUpload(filename, user_profile, json.dumps(response))
         self.__WriteCSVUploadDelete('razer_transaction', to_csv)
         os.remove(filename)
