@@ -84,8 +84,8 @@ class RazerPayServices:
                 "payment_type"  : "REGISTRATION" if r['Bill Amt'] == 400 else "RENEWAL",
                 "status"        : r['Status'],
                 "order_id"      : r['Order ID'],
-                "payment_mode"  : "FPX" if type(r['App Code']) == 'float' else "CARD",
-                "app_code"      : r['App Code']
+                "payment_mode"  : "FPX" if r['App Code'] == 'nan' else "CARD",
+                "app_code"      : "" if r['App Code'] == 'nan' else r['App Code']
             } 
             to_csv.append(payloads)
         self.__RegisterNewUpload(filename, user_profile, json.dumps(response))
