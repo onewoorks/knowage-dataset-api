@@ -64,6 +64,22 @@ class SupplierManagementModel:
         query += "FROM razorpay_transaction WHERE MONTH(DATE) = '{}' AND YEAR(DATE) = '{}' ".format(month if month is not None else "MONTH(now)", year if year is not None else "YEAR(now)")
         query += "GROUP BY DAY(DATE)"
         return execute_query(query)
+    
+    def ReadTransactionSummaryMonthPaymentMode(self, month = None, year = None, status = 'captured'):
+        query = "SELECT "
+        query += "DAY(DATE) AS day, "
+        query += "SUM(amount) AS total_captured, "
+        query += "SUM(IF(amount = 400, amount, 0)) AS registration_fee_total, "
+        query += "SUM(IF(amount = 50, amount, 0)) AS processing_fee_total, "
+        query += "SUM(IF(amount = 400 AND payment_mode = 'FPX', amount,0)) AS registration_fee_fpx, "
+        query += "SUM(IF(amount = 400 AND payment_mode = 'CARD', amount,0)) AS registration_fee_card, "
+        query += "SUM(IF(amount = 50 AND payment_mode = 'FPX', amount,0)) AS processing_fee_fpx, "
+        query += "SUM(IF(amount = 50 AND payment_mode = 'CARD', amount,0)) AS processing_fee_card "
+        query += "FROM razorpay_transaction "
+        query += "WHERE MONTH(DATE) = '{}' AND YEAR(DATE) = '{}' ".format(month if month is not None else "MONTH(now)", year if year is not None else "YEAR(now)")
+        query += "AND STATUS = '{}' ".format(status)
+        query += "GROUP BY DAY(DATE) "
+        return execute_query(query)
 
     def ActualSupplierRevenue(self,working_days,appl_type):
         query = ""

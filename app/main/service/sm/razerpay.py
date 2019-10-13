@@ -121,27 +121,30 @@ class RazerPayServices:
         SupplierManagementModel().CreateBulkTransaction(file_path)
 
     def ReadMonthTransactionSummary(self, month = None, year = None):
-        data = SupplierManagementModel().ReadTransactionSummaryByMonth(datetime.now().month,datetime.now().year)
+        # data = SupplierManagementModel().ReadTransactionSummaryByMonth(datetime.now().month,datetime.now().year)
+        data = SupplierManagementModel().ReadTransactionSummaryMonthPaymentMode(datetime.now().month,datetime.now().year, status='captured')
         response = []
         header = {
             "100"   : "0",
-            "101"   : "Captured Amount",
-            "102"   : "Failed Amount",
-            "103"   : "Blocked Amount",
-            "104"   : "Captured Count",
-            "105"   : "Failed Count",
-            "106"   : "Blocked Count"
+            "101"   : "Total Captured",
+            "102"   : "Registration Fee Total",
+            "103"   : "Registration Fee (FPX)",
+            "104"   : "Registration Fee (CARD)",
+            "105"   : "Processing Fee Total",
+            "106"   : "Processing Fee (FPX)",
+            "107"   : "Processing Fee (CARD)"
         }
         response.append(header)
         for d in data:
             content = {
                 "100"   : str(d['day']),
-                "101"   : "{0:,.2f}".format(float(d['captured_amount'])),
-                "102"   : "{0:,.2f}".format(float(d['failed_amount'])),
-                "103"   : "{0:,.2f}".format(float(d['blocked_amount'])),
-                "104"   : "{0:,.0f}".format(int(d['captured_count'])),
-                "105"   : "{0:,.0f}".format(int(d['failed_count'])),
-                "106"   : "{0:,.0f}".format(int(d['blocked_count']))
+                "101"   : "{0:,.2f}".format(float(d['total_captured'])),
+                "102"   : "{0:,.2f}".format(float(d['registration_fee_total'])),
+                "103"   : "{0:,.2f}".format(float(d['registration_fee_fpx'])),
+                "104"   : "{0:,.2f}".format(float(d['registration_fee_card'])),
+                "105"   : "{0:,.2f}".format(float(d['processing_fee_total'])),
+                "106"   : "{0:,.2f}".format(float(d['processing_fee_fpx'])),
+                "107"   : "{0:,.2f}".format(float(d['processing_fee_card']))
             }
             response.append(content)
 
