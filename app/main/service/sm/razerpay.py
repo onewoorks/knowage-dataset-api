@@ -123,14 +123,14 @@ class RazerPayServices:
         response = []
         for d in data:
             content = {
-                "id"                : str(int(d['day'])-1),
-                "day"               : str(d['day']),
-                "captured_amount"   : float(d['captured_amount']),
-                "captured_count"    : int(d['captured_count']),
-                "failed_amount"     : float(d['failed_amount']),
-                "failed_count"      : int(d['failed_count']),
-                "blocked_amount"    : float(d['blocked_amount']),
-                "blocked_count"     : int(d['blocked_count'])
+                "1 id"                : str(int(d['day'])-1),
+                "2 day"               : str(d['day']),
+                "3 captured_amount"   : float(d['captured_amount']),
+                "4 captured_count"    : int(d['captured_count']),
+                "5 failed_amount"     : float(d['failed_amount']),
+                "6 failed_count"      : int(d['failed_count']),
+                "7 blocked_amount"    : float(d['blocked_amount']),
+                "8 blocked_count"     : int(d['blocked_count'])
             }
             response.append(content)
 
