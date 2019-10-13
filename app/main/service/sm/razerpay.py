@@ -121,16 +121,25 @@ class RazerPayServices:
     def ReadMonthTransactionSummary(self, month = None, year = None):
         data = SupplierManagementModel().ReadTransactionSummaryByMonth(datetime.now().month,datetime.now().year)
         response = []
+        header = {
+            "100"   : "Day",
+            "101"   : "Captured Amount",
+            "102"   : "Failed Amount",
+            "103"   : "Blocked Amount",
+            "104"   : "Captured Count",
+            "105"   : "Failed Count",
+            "106"   : "Blocked Count"
+        }
+        response.append(header)
         for d in data:
             content = {
-                "1 id"                : str(int(d['day'])-1),
-                "2 day"               : str(d['day']),
-                "3 captured_amount"   : float(d['captured_amount']),
-                "4 captured_count"    : int(d['captured_count']),
-                "5 failed_amount"     : float(d['failed_amount']),
-                "6 failed_count"      : int(d['failed_count']),
-                "7 blocked_amount"    : float(d['blocked_amount']),
-                "8 blocked_count"     : int(d['blocked_count'])
+                "100"   : str(d['day']),
+                "101"   : float(d['captured_amount']),
+                "102"     : float(d['failed_amount']),
+                "103"    : float(d['blocked_amount']),
+                "104"    : int(d['captured_count']),
+                "105"      : int(d['failed_count']),
+                "106"     : int(d['blocked_count'])
             }
             response.append(content)
 
