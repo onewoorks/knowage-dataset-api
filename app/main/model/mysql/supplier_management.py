@@ -49,7 +49,7 @@ class SupplierManagementModel:
         query += "INTO TABLE razorpay_transaction "
         query += "FIELDS TERMINATED BY ',' ENCLOSED BY '\"' "
         query += "LINES TERMINATED BY '\r\n' IGNORE 1 LINES "
-        query += "(`DATE`,`billing_name`,`amount`, `payment_type`, `STATUS`, `order_id`) " 
+        query += "(`DATE`,`billing_name`,`amount`, `payment_type`, `STATUS`, `order_id`, `payment_mode`, `app_code`) " 
         return mysql_insert_query(query)
     
     def ReadTransactionSummaryByMonth(self, month = None, year = None):
