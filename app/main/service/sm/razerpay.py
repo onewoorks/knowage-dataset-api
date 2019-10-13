@@ -137,9 +137,9 @@ class RazerPayServices:
                 "101"   : "{0:,.2f}".format(float(d['captured_amount'])),
                 "102"   : "{0:,.2f}".format(float(d['failed_amount'])),
                 "103"   : "{0:,.2f}".format(float(d['blocked_amount'])),
-                "104"   : "{0:,.2f}".format(int(d['captured_count'])),
-                "105"   : "{0:,.2f}".format(int(d['failed_count'])),
-                "106"   : "{0:,.2f}".format(int(d['blocked_count']))
+                "104"   : "{0:,.0f}".format(int(d['captured_count'])),
+                "105"   : "{0:,.0f}".format(int(d['failed_count'])),
+                "106"   : "{0:,.0f}".format(int(d['blocked_count']))
             }
             response.append(content)
 
