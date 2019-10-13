@@ -1,4 +1,6 @@
 import os, json, csv
+from datetime import datetime
+from calendar import monthrange
 import pandas as pd 
 from flask import current_app as app
 
@@ -117,10 +119,11 @@ class RazerPayServices:
         SupplierManagementModel().CreateBulkTransaction(file_path)
 
     def ReadMonthTransactionSummary(self, month = None, year = None):
-        data = SupplierManagementModel().ReadTransactionSummaryByMonth('10','2019')
+        data = SupplierManagementModel().ReadTransactionSummaryByMonth(datetime.now().month,datetime.now().year)
         response = []
         for d in data:
             content = {
+                "id"                : str(int(d['day'])-1),
                 "day"               : str(d['day']),
                 "captured_amount"   : float(d['captured_amount']),
                 "captured_count"    : int(d['captured_count']),
@@ -130,4 +133,8 @@ class RazerPayServices:
                 "blocked_count"     : int(d['blocked_count'])
             }
             response.append(content)
+
+        # for day in range(monthrange(datetime.now().year, datetime.now().month)[1]):
+        #     if any(d['id'] == str(day) for d in response):
+        #         print(day)
         return response
