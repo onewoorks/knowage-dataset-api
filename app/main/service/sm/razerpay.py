@@ -122,7 +122,7 @@ class RazerPayServices:
         data = SupplierManagementModel().ReadTransactionSummaryByMonth(datetime.now().month,datetime.now().year)
         response = []
         header = {
-            "100"   : 0,
+            "100"   : "0",
             "101"   : "Captured Amount",
             "102"   : "Failed Amount",
             "103"   : "Blocked Amount",
@@ -133,7 +133,7 @@ class RazerPayServices:
         response.append(header)
         for d in data:
             content = {
-                "100"   : int(d['day']),
+                "100"   : str(d['day']),
                 "101"   : "{0:,.2f}".format(float(d['captured_amount'])),
                 "102"   : "{0:,.2f}".format(float(d['failed_amount'])),
                 "103"   : "{0:,.2f}".format(float(d['blocked_amount'])),
