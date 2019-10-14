@@ -121,7 +121,6 @@ class RazerPayServices:
         SupplierManagementModel().CreateBulkTransaction(file_path)
 
     def ReadMonthTransactionSummary(self, month = None, year = None):
-        # data = SupplierManagementModel().ReadTransactionSummaryByMonth(datetime.now().month,datetime.now().year)
         data = SupplierManagementModel().ReadTransactionSummaryMonthPaymentMode(datetime.now().month,datetime.now().year, status='captured')
         response = []
         header = {
@@ -151,4 +150,20 @@ class RazerPayServices:
         # for day in range(monthrange(datetime.now().year, datetime.now().month)[1]):
         #     if any(d['id'] == str(day) for d in response):
         #         print(day)
+        return response
+    
+    def MonthTransactionToPivotSummary(self):
+        response = {
+            "summary": {
+                "processing_fpx"    : "10",
+                "processing_card"   : "20",
+                "registration_fpx"  : "30",
+                "registration_card" : "40",
+                "processing_amount" : "50",
+                "registration_amount" : "60",
+                "fpx_amount"    : "70",
+                "card_amount"   : "80"
+            },
+            "pivot" : {}
+        }
         return response
