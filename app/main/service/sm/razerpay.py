@@ -185,6 +185,7 @@ class RazerPayServices:
         for d in range(total_days):
             day = year_month + str(d+1).zfill(2)
             daily = {
+                "id"                    : int(d+1),
                 "day"                   : str(d+1), 
                 "processing_fpx"        : float(daily_df.loc(axis=0)[day,'PROCESSING','FPX'].sum()),
                 "processing_card"       : float(daily_df.loc(axis=0)[day,'PROCESSING','CARD'].sum()),
