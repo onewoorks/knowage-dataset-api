@@ -162,7 +162,8 @@ class RazerPayServices:
                 "processing_amount" : "50",
                 "registration_amount" : "60",
                 "fpx_amount"    : "70",
-                "card_amount"   : "80"
+                "card_amount"   : "80",
+                "big_amount"    : "90"
             },
             "pivot" : {}
         }
