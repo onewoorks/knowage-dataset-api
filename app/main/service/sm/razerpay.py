@@ -153,17 +153,21 @@ class RazerPayServices:
         return response
     
     def MonthTransactionToPivotSummary(self):
-        response = {
+        razer_transactions = SupplierManagementModel().ReadTransactionPivotSummary(datetime.now().month,datetime.now().year, status='captured')
+        df = pd.DataFrame(razer_transactions).drop(['billing_name','order_id', 'id','app_code'], axis=1)
+        df_summary = df.groupby(['payment_type','payment_mode']).sum().drop(['status'],axis=1)
+        print(df_summary)
+        response = { 
             "summary": {
-                "processing_fpx"    : "10",
-                "processing_card"   : "20",
-                "registration_fpx"  : "30",
-                "registration_card" : "40",
-                "processing_amount" : "50",
-                "registration_amount" : "60",
-                "fpx_amount"    : "70",
-                "card_amount"   : "80",
-                "big_amount"    : "90"
+                "processing_fpx"        : float(df_summary.loc['PROCESSING'].loc['FPX']),
+                "processing_card"       : float(df_summary.loc['PROCESSING'].loc['CARD']),
+                "registration_fpx"      : float(df_summary.loc['REGISTRATION'].loc['FPX']),
+                "registration_card"     : float(df_summary.loc['REGISTRATION'].loc['CARD']),
+                "processing_amount"     : float(df_summary.loc['PROCESSING'].loc['FPX']+df_summary.loc['PROCESSING'].loc['CARD']),
+                "registration_amount"   : float(df_summary.loc['REGISTRATION'].loc['FPX']+df_summary.loc['REGISTRATION'].loc['CARD']),
+                "fpx_amount"            : float(df_summary.loc['PROCESSING'].loc['FPX']+df_summary.loc['REGISTRATION'].loc['FPX']),
+                "card_amount"           : float(df_summary.loc['PROCESSING'].loc['CARD']+df_summary.loc['REGISTRATION'].loc['CARD']),
+                "big_amount"            : float(df.sum().loc['amount'])
             },
             "pivot" : {}
         }

@@ -81,6 +81,12 @@ class SupplierManagementModel:
         query += "GROUP BY DAY(DATE) "
         return execute_query(query)
 
+    def ReadTransactionPivotSummary(self, month = None, year = None, status = 'captured'):
+        query = "SELECT * FROM razorpay_transaction "
+        query += "WHERE MONTH(DATE) = '{}' AND YEAR(DATE) = '{}' ".format(month if month is not None else "MONTH(now)", year if year is not None else "YEAR(now) ")
+        query += "AND status = '{}' ".format(status)
+        return execute_query(query)
+
     def ActualSupplierRevenue(self,working_days,appl_type):
         query = ""
         count = 1
