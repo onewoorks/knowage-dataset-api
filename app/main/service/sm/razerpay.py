@@ -181,7 +181,8 @@ class RazerPayServices:
         daily_df    = payloads.groupby([pd.to_datetime(payloads['date']),'payment_type','payment_mode']).sum().drop('status',axis=1)
         year_month  = str(payloads['date'].dt.year.max()) + '-' + str(payloads['date'].dt.month.max()) + '-'
         pivot_data  = []
-        for d in range(max_day):
+        total_days = monthrange(payloads['date'].dt.year.max(),payloads['date'].dt.month.max())[1]
+        for d in range(total_days):
             day = year_month + str(d+1).zfill(2)
             daily = {
                 "day"                   : str(d+1), 
