@@ -153,22 +153,47 @@ class RazerPayServices:
         return response
     
     def MonthTransactionToPivotSummary(self):
-        razer_transactions = SupplierManagementModel().ReadTransactionPivotSummary(datetime.now().month,datetime.now().year, status='captured')
-        df = pd.DataFrame(razer_transactions).drop(['billing_name','order_id', 'id','app_code'], axis=1)
-        df_summary = df.groupby(['payment_type','payment_mode']).sum().drop(['status'],axis=1)
-        print(df_summary)
+        razer_transactions  = SupplierManagementModel().ReadTransactionPivotSummary(datetime.now().month,datetime.now().year, status='captured')
+        df                  = pd.DataFrame(razer_transactions).drop(['billing_name','order_id', 'id','app_code'], axis=1)
         response = { 
-            "summary": {
-                "processing_fpx"        : float(df_summary.loc['PROCESSING'].loc['FPX']),
-                "processing_card"       : float(df_summary.loc['PROCESSING'].loc['CARD']),
-                "registration_fpx"      : float(df_summary.loc['REGISTRATION'].loc['FPX']),
-                "registration_card"     : float(df_summary.loc['REGISTRATION'].loc['CARD']),
-                "processing_amount"     : float(df_summary.loc['PROCESSING'].loc['FPX']+df_summary.loc['PROCESSING'].loc['CARD']),
-                "registration_amount"   : float(df_summary.loc['REGISTRATION'].loc['FPX']+df_summary.loc['REGISTRATION'].loc['CARD']),
-                "fpx_amount"            : float(df_summary.loc['PROCESSING'].loc['FPX']+df_summary.loc['REGISTRATION'].loc['FPX']),
-                "card_amount"           : float(df_summary.loc['PROCESSING'].loc['CARD']+df_summary.loc['REGISTRATION'].loc['CARD']),
-                "big_amount"            : float(df.sum().loc['amount'])
-            },
-            "pivot" : {}
+            "summary": self.__RazerTransactionPivotSummary(df),
+            "pivot" : self.__RazerTransactionGraphPivot(df)
         }
         return response
+
+    def __RazerTransactionPivotSummary(self, payloads):
+        df_summary  = payloads.groupby(['payment_type','payment_mode']).sum().drop(['status'],axis=1)
+        summary = {
+            "processing_fpx"        : float(df_summary.loc['PROCESSING'].loc['FPX']),
+            "processing_card"       : float(df_summary.loc['PROCESSING'].loc['CARD']),
+            "registration_fpx"      : float(df_summary.loc['REGISTRATION'].loc['FPX']),
+            "registration_card"     : float(df_summary.loc['REGISTRATION'].loc['CARD']),
+            "processing_amount"     : float(df_summary.loc['PROCESSING'].loc['FPX']+df_summary.loc['PROCESSING'].loc['CARD']),
+            "registration_amount"   : float(df_summary.loc['REGISTRATION'].loc['FPX']+df_summary.loc['REGISTRATION'].loc['CARD']),
+            "fpx_amount"            : float(df_summary.loc['PROCESSING'].loc['FPX']+df_summary.loc['REGISTRATION'].loc['FPX']),
+            "card_amount"           : float(df_summary.loc['PROCESSING'].loc['CARD']+df_summary.loc['REGISTRATION'].loc['CARD']),
+            "big_amount"            : float(payloads.sum().loc['amount'])
+        }
+        return summary
+
+    def __RazerTransactionGraphPivot(self, payloads):
+        max_day     = payloads['date'].dt.day.max()
+        daily_df    = payloads.groupby([pd.to_datetime(payloads['date']),'payment_type','payment_mode']).sum().drop('status',axis=1)
+        year_month  = str(payloads['date'].dt.year.max()) + '-' + str(payloads['date'].dt.month.max()) + '-'
+        pivot_data  = []
+        for d in range(max_day):
+            day = year_month + str(d+1).zfill(2)
+            daily = {
+                "day"                   : str(d+1), 
+                "processing_fpx"        : float(daily_df.loc(axis=0)[day,'PROCESSING','FPX'].sum()),
+                "processing_card"       : float(daily_df.loc(axis=0)[day,'PROCESSING','CARD'].sum()),
+                "registration_fpx"      : float(daily_df.loc(axis=0)[day,'REGISTRATION','FPX'].sum()),
+                "registration_card"     : float(daily_df.loc(axis=0)[day,'REGISTRATION','CARD'].sum()),
+                "processing_amount"     : float(daily_df.loc(axis=0)[day,'PROCESSING','FPX'].sum()) + float(daily_df.loc(axis=0)[day,'PROCESSING','CARD'].sum()),
+                "registration_amount"   : float(daily_df.loc(axis=0)[day,'REGISTRATION','FPX'].sum()) + float(daily_df.loc(axis=0)[day,'REGISTRATION','CARD'].sum()),
+                "fpx_amount"            : float(daily_df.loc(axis=0)[day,'PROCESSING','FPX'].sum()) + float(daily_df.loc(axis=0)[day,'REGISTRATION','FPX'].sum()),
+                "card_amount"           : float(daily_df.loc(axis=0)[day,'PROCESSING','CARD'].sum()) + float(daily_df.loc(axis=0)[day,'REGISTRATION','CARD'].sum())
+            }
+            pivot_data.append(daily)
+        
+        return pivot_data
