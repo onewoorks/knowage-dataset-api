@@ -124,7 +124,7 @@ class RazerPayServices:
         data = SupplierManagementModel().ReadTransactionSummaryMonthPaymentMode(datetime.now().month,datetime.now().year, status='captured')
         response = []
         header = {
-            "100"   : "0",
+            "100"   : "Day",
             "101"   : "Total Captured",
             "102"   : "Registration Fee Total",
             "103"   : "Registration Fee (FPX)",
