@@ -110,8 +110,9 @@ class RazerPayTransactionOverwriteRoute(Resource):
 @api.route('/razerpay-summary/<mode>')
 class RazerPaySummaryRoute(Resource):
     def get(self, mode = 'datatable'):
+        data = RazerPayServices().load_ws_data('RAZERPAY_TRANSACTION')
         if mode == 'datatable':
-            data = RazerPayServices().ReadMonthTransactionSummary()
+            data = data['datatable']
         if mode == 'pivot':
-            data = RazerPayServices().MonthTransactionToPivotSummary()
+            data = data['cockpit']
         return data

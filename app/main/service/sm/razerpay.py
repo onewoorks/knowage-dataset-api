@@ -1,12 +1,19 @@
 import os, json, csv
-from datetime import datetime
+from datetime import datetime, date
 from calendar import monthrange
 import pandas as pd 
 from flask import current_app as app
 
+from ...model.mysql import Common_Query
 from ...model.mysql.supplier_management import SupplierManagementModel
 
-class RazerPayServices:
+class RazerPaySetter:
+    WS_NAME = {
+        "RAZERPAY_TRANSACTION" : "RAZERPAY_TRANSACTION"
+    }
+    GROUP = "SM"
+
+class RazerPayServices(RazerPaySetter):
 
     def UploadHistory(self):
         data = SupplierManagementModel().ReadRazerPayUploadHistory()
@@ -120,7 +127,7 @@ class RazerPayServices:
             dict_writer.writerows(payloads)
         SupplierManagementModel().CreateBulkTransaction(file_path)
 
-    def ReadMonthTransactionSummary(self, month = None, year = None):
+    def read_month_transaction_summary(self, month = None, year = None):
         data = SupplierManagementModel().ReadTransactionSummaryMonthPaymentMode(datetime.now().month,datetime.now().year, status='captured')
         response = []
         header = {
@@ -146,13 +153,9 @@ class RazerPayServices:
                 "107"   : "{0:,.2f}".format(float(d['processing_fee_card']))
             }
             response.append(content)
-
-        # for day in range(monthrange(datetime.now().year, datetime.now().month)[1]):
-        #     if any(d['id'] == str(day) for d in response):
-        #         print(day)
         return response
     
-    def MonthTransactionToPivotSummary(self):
+    def month_transaction_to_pivot_summary(self):
         razer_transactions  = SupplierManagementModel().ReadTransactionPivotSummary(datetime.now().month,datetime.now().year, status='captured')
         df                  = pd.DataFrame(razer_transactions).drop(['billing_name','order_id', 'id','app_code'], axis=1)
         response = { 
@@ -197,5 +200,36 @@ class RazerPayServices:
                 "card_amount"           : float(daily_df.loc(axis=0)[day,'PROCESSING','CARD'].sum()) + float(daily_df.loc(axis=0)[day,'REGISTRATION','CARD'].sum())
             }
             pivot_data.append(daily)
-        
         return pivot_data
+
+    def create_razerpay_dataset(self):
+        start_time  = datetime.now()
+        ws_name     = "RAZERPAY_TRANSACTION"
+        print('-- {} --'.format(ws_name))
+        print('-- start query----')
+        dataset = {
+            "datatable" : self.read_month_transaction_summary(),
+            "cockpit"   : self.month_transaction_to_pivot_summary() 
+        }
+        print('-- end query-----')
+        end_time    = datetime.now()
+        input = {
+            "ws_name"           : "{}".format(ws_name.replace(' ','_')),
+            "ws_is_active"      : "1",
+            "ws_desc"           : "{} as at {}".format(ws_name, date.today().strftime("%d %B %Y")),
+            "ws_group"          : self.GROUP,
+            "ws_start_execute"  : start_time,
+            "ws_end_execute"    : end_time,
+            "ws_duration"       : int((end_time-start_time).total_seconds()),
+            "ws_data"           : json.dumps(dataset),
+            "ws_created_at"     : datetime.now(),
+            "ws_updated_at"     : datetime.now(),
+            "ws_status"         : "SUCCESS",
+            "ws_error"          : ""
+        }
+        Common_Query().Register_New_Ws(input)
+        return dataset
+
+    def load_ws_data(self, ws_name):
+        response = Common_Query().Get_Latest_WS_Data(ws_name)[0]['ws_data']
+        return json.loads(response)
