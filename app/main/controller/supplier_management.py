@@ -9,6 +9,7 @@ from flask import current_app as app
 from flask_restplus import Namespace, Resource, reqparse
 from ..service.sm_performance_update import SM_Performance_Update
 from ..service.sm.razerpay import RazerPayServices
+from ..service.sm.epol import EpolServices
 
 api = Namespace('SM', 'Summary dataset of performance update for Supplier Management')
 
@@ -115,4 +116,11 @@ class RazerPaySummaryRoute(Resource):
             data = data['datatable']
         if mode == 'pivot':
             data = data['cockpit']
+        return data
+
+
+@api.route('/epol-training/')
+class EpolTrainingRoute(Resource):
+    def get(self):
+        data = EpolServices().get_training_summary_report()
         return data
