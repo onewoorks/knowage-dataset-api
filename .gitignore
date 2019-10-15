@@ -3,3 +3,4 @@ __pycache__
 /upload_media
 /tmp_folder
 .env
+.vscode
