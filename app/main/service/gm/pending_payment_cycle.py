@@ -53,7 +53,7 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
         if len(existed) > 0:
             dataset = json.loads(existed[0]['ws_data'])
         else:
-            dataset = self.NewPendingPaymentCycle()
+            dataset = self.__new_pending_payment_cycle()
         return dataset
 
     def CreatePendingPaymentCycleWS(self):
@@ -156,7 +156,7 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
         ]
         return pivot_summary
         
-    def NewPendingPaymentCycle(self):
+    def __new_pending_payment_cycle(self):
         start_time = datetime.now()
         print('-- GM PENDING PAYMENT CYCLE --')
         print('-- start query----')
@@ -214,3 +214,6 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
         for i in range(len(self.HEADING)):
             content[start_column+i] = rowset[i]
         return content
+
+    def create_new_pending_payment_cycle_dataset(self):
+        self.__new_pending_payment_cycle()

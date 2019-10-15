@@ -1,12 +1,13 @@
-import pymysql
-import cx_Oracle
+import pymysql, cx_Oracle, os
+
+from dotenv import load_dotenv
 
 #mysql connection
-DB_HOST = "192.168.62.136"
-DB_USER = "epcmsadmin"
-DB_PASS = "cDc@2019"
-DB_DBASE = "cdccms"
-
+DB_HOST     = os.getenv('CDCCMS_MYSQL_DB_HOST')
+DB_USER     = os.getenv('CDCCMS_MYSQL_DB_USER')
+DB_PASS     = os.getenv('CDCCMS_MYSQL_DB_PASS')
+DB_DBASE    = os.getenv('CDCCMS_MYSQL_DB_DBASE')
+ 
 
 def execute_query(query):
     db = pymysql.connect(
@@ -36,7 +37,7 @@ def mysql_insert_query(query):
     cursor.execute(query)
 
 def execute_oracle_query(query):
-    connection = cx_Oracle.connect("ngep_cms/ng3p_cms@rac-cluster-scan.eperolehan.com.my:1521/ngepsit")
+    connection = cx_Oracle.connect(os.getenv('EP_ORACLE_CONNECTION'))
     cursor = connection.cursor()
     cursor.execute(query)
     data = cursor
