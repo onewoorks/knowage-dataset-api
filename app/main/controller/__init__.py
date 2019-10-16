@@ -5,6 +5,7 @@ from .ep_supplier import api as ep_supplier_api
 from .supplier_management import api as sm_performance_update_api
 from .government_management import api as gm_performance_update_api
 from .scheduler import api as scheduler_api
+from .training import api as training_api
 
 api = Api(
     title="CdcCms Knowage dataset API",
@@ -16,4 +17,5 @@ api.add_namespace(ep_contract_api)
 api.add_namespace(ep_supplier_api)
 api.add_namespace(sm_performance_update_api)
 api.add_namespace(gm_performance_update_api)
+api.add_namespace(training_api)
 api.add_namespace(scheduler_api)
