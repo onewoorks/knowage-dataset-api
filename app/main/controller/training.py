@@ -18,3 +18,18 @@ class LatihanDalamKelasRoute(Resource):
     def get(self):
         data = EpolServices().get_training_summary_report_latihan()
         return data
+
+@api.route('/cbt')
+class CbtRoute(Resource):
+    def get(self):
+        data = EpolServices().get_training_summary_report_cbt()
+        return data
+
+@api.route('/update-latest-data')
+class UpdateLatestData(Resource):
+    def get(self):
+        data = EpolServices().create_epol_dataset()
+        return {
+            "status"    : "performed latest data for training module",
+            "response"  : data
+        }

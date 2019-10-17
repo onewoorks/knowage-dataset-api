@@ -18,7 +18,7 @@ class TrainingEpolModel:
         query += "ORDER BY course_code "
         return execute_query(query)
 
-    def read_training_summary_report(self, year = None):
+    def read_training_cbt_summary(self, year = None):
         query = "SELECT course_name,course_code, MONTH(training_dt_enrolled) AS month, "
         query += "(CASE WHEN course_code LIKE 'ePembekal-%' THEN 'Supplier' "
         query +=  "WHEN course_code LIKE 'ePTJ-%' THEN 'PTJ' "

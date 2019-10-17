@@ -1,5 +1,4 @@
 from ...model.mysql import Common_Query
-from ...model.mysql.sm_epol import SmEpolModel
 from ...model.mysql.training import TrainingEpolModel
 
 import pandas as pd 
@@ -51,10 +50,8 @@ class EpolServices(EpolSetter):
     def get_training_summary_report_latihan(self):
         return self.__training_summary_report_latihan()
 
-    def get_training_summary_report(self):
-        data = SmEpolModel().read_training_summary_report()
-        response = self.__training_summary_report(pd.DataFrame(data))
-        return response
+    def get_training_summary_report_cbt(self):
+        return self.__training_summary_report_cbt()
 
     def __training_construct_dataset(self, payloads):
         aa = payloads.sum()
@@ -76,8 +73,8 @@ class EpolServices(EpolSetter):
                 response.append(content)
         return response
 
-    def __training_summary_report(self):
-        raw         = SmEpolModel().read_training_summary_report()
+    def __training_summary_report_cbt(self):
+        raw         = TrainingEpolModel().read_training_cbt_summary()
         payloads    = pd.DataFrame(raw)
         data        = payloads.groupby(['type_user','course_name','month'])
         dataset     = self.__training_construct_dataset(data)
@@ -98,8 +95,14 @@ class EpolServices(EpolSetter):
         print('-- {} --'.format(ws_name))
         print('-- start query----')
         dataset = {
-            "datatable" : self.__training_summary_report(),
-            "cockpit"   : {}
+            "datatable" : {
+                "cbt"   : self.__training_summary_report_cbt(),
+                "latihan_dalam_kelas" : self.__training_summary_report_latihan()
+            },
+            "cockpit"   : {
+                "cbt"                   : {},
+                "latihan_dalam_kelas"   : {}
+            }
         }
         end_time    = datetime.now()
         input = {

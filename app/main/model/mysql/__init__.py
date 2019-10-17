@@ -17,7 +17,7 @@ class Common_Query():
         query += "'{}', ".format(ws_data['ws_start_execute'])
         query += "'{}', ".format(ws_data['ws_end_execute'])
         query += "'{}', ".format(ws_data['ws_duration'])
-        query += "'{}', ".format(ws_data['ws_data'])
+        query += "'{}', ".format(ws_data['ws_data'].replace("'","''"))
         query += "'{}', ".format(ws_data['ws_created_at'])
         query += "'{}', ".format(ws_data['ws_updated_at'])
         query += "'{}', ".format(ws_data['ws_status'])
