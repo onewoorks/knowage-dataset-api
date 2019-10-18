@@ -52,38 +52,52 @@ class EpolServices(EpolSetter):
 
     def get_training_summary_report_cbt(self):
         return self.__training_summary_report_cbt()
-
-    def __training_dateset_pivot(self, payloads):
+    
+    def __pivot_monthly(self, payloads):
         clean = pd.DataFrame(payloads)
-        pivot = clean[clean['101'] == 'Total'].reset_index().drop(['index'],axis=1)
-        for c in range(len(pivot.columns.values) - 2):
-            pivot[str(102+c)] = pivot[str(102+c)].str.replace(",", "").astype(float)
-        pivot_data = []
-        for p in range(len(pivot)):
-            content = {}
-            content_summary = []
-            for r in range(12):
-                content_summary.append({
-                    "id" : r+1,
-                    "month" : r+1,
-                    "value" : pivot.loc[p][str(102+r)]
-                })
-            content_cummulative = []
-            cumsum = pivot.loc[p].drop(labels=['100','101','114']).cumsum()
-            for c in range(len(cumsum)):
-                content_cummulative.append({
-                    "id" : c+1,
-                    "month" : c+1,
-                    "value" : cumsum[str(102+c)]
-                })
-            content[pivot.loc[p]['100']] = {
-                    "monthly" : content_summary,
-                    "total" : pivot.loc[p]['114'],
-                    "cummulative" : content_cummulative
+        pivot = clean[clean['101'] == 'Total'].reset_index().drop('index',axis=1)
+        monthly = []
+        for i in range(12):
+            data_monthly = {
+                "id" : i+1,
+                "month" : str(i+1)
             }
-            pivot_data.append(content)
+            for p in range(len(pivot)):
+                data_monthly[pivot.loc[p]['100'].lower()] = float(pivot.loc[p][str(102+i)])
+            monthly.append(data_monthly)
+        return monthly
+    
+    def __pivot_cumulative(self, payloads):
+        clean       = pd.DataFrame(payloads)
+        pivot       = clean[clean['101'] == 'Total'].reset_index().drop(['index','101','114'],axis=1)
+        type_user   = [ x.lower() for x in pivot['100']]
+        for c in range(len(pivot.columns.values) - 1):
+            pivot[str(102+c)] = pivot[str(102+c)].str.replace(",", "").astype(float)
+        cumulative  = []
+        cumsum      = []
+        
+        for u in range(len(pivot)):
+            content = {
+                u : pivot.loc[u].drop(labels=['100']).cumsum()
+            }
+            cumsum.append(content)
+        for i in range(12):
+            data_cumulative = {
+                "id"    : i+1,
+                "month" : str(i+1)
+            }
+            for p in range(len(pivot)):
+                data_cumulative[type_user[p]] = cumsum[p][p][str(102+i)]
+            cumulative.append(data_cumulative)
+        return cumulative
+        
+    def __training_dataset_pivot(self, payloads):
+        pivot_data = {
+            "monthly" : self.__pivot_monthly(payloads),
+            "cumulative" : self.__pivot_cumulative(payloads)
+        }
         return pivot_data
-
+       
     def __training_dataset_total(self, payloads):
         type_user_summary = pd.DataFrame(payloads).drop('101',axis=1)
         for c in range(len(type_user_summary.columns.values) - 1):
@@ -147,12 +161,12 @@ class EpolServices(EpolSetter):
         latihan_dalam_kelas = self.__training_summary_report_latihan()
         dataset = {
             "datatable" : {
-                "cbt"   : cbt,
-                "latihan_dalam_kelas" : latihan_dalam_kelas
+                "cbt"                   : cbt,
+                "latihan_dalam_kelas"   : latihan_dalam_kelas
             },
             "cockpit"   : {
-                "cbt"                   : self.__training_dateset_pivot(cbt),
-                "latihan_dalam_kelas"   : self.__training_dateset_pivot(latihan_dalam_kelas)
+                "cbt"                   : self.__training_dataset_pivot(cbt),
+                "latihan_dalam_kelas"   : self.__training_dataset_pivot(latihan_dalam_kelas)
             }
         }
         end_time    = datetime.now()
