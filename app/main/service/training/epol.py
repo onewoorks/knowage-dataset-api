@@ -55,7 +55,9 @@ class EpolServices(EpolSetter):
 
     def __training_dateset_pivot(self, payloads):
         clean = pd.DataFrame(payloads)
-        pivot = clean[clean['101'] == 'Total'].reset_index().drop('index',axis=1)
+        pivot = clean[clean['101'] == 'Total'].reset_index().drop(['index'],axis=1)
+        for c in range(len(pivot.columns.values) - 2):
+            pivot[str(102+c)] = pivot[str(102+c)].str.replace(",", "").astype(float)
         pivot_data = []
         for p in range(len(pivot)):
             content = {}

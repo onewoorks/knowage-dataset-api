@@ -98,6 +98,7 @@ class RazerPayServices(RazerPaySetter):
         self.__RegisterNewUpload(filename, user_profile, json.dumps(response))
         self.__WriteCSVUploadDelete('razer_transaction', to_csv)
         os.remove(filename)
+        self.create_razerpay_dataset()
         return response
 
     def ProcessUploadFile(self, filename, user_profile = None):
