@@ -9,6 +9,7 @@ from ..service.gm.pv_status import PVStatusPerformanceUpdate
 from ..service.gm.target import GM_Target
 from ..service.gm.revenue import GM_Revenue
 from ..service.gm.top_ptj import GM_TopPtj
+from ..service.gm import GM_Lovs
 
 from ..model.gm_query import GM_Query
 
@@ -124,3 +125,9 @@ class GM_TopPtjSummaryRoute(Resource):
         summary = GM_TopPtj()
         data = summary.TopPtjListSummary()
         return data
+
+    
+@api.route('/fulfilment-year')
+class GMFulfilmentYearRoute(Resource):
+    def get(self):
+        return GM_Lovs().available_fulfilment_year()

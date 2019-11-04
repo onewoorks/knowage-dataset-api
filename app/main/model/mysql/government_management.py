@@ -176,3 +176,7 @@ class MYSQL_GM_QUERY():
         query += "AND fl_module IN ('Contract Order','Purchase Order') "
         query += "GROUP BY fl_created_ptj_id "
         return execute_query(query) 
+
+    def list_of_available_fulfilment_year(self):
+        query = "SHOW TABLES LIKE 'ep_fulfilment_dtl_%'"
+        return execute_query(query)
