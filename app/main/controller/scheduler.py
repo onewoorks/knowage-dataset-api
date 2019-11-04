@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os, json, flask, time
 from datetime import datetime
 
-import random, names
+import random
 
 from ..service.sm.razerpay import RazerPayServices
 from ..service.gm.pending_payment_cycle import PendingPaymentCyclePerformanceUpdate
