@@ -45,69 +45,71 @@ class MYSQL_GM_QUERY():
         resp = execute_query(query)
         return resp
 
-    def pending_payment_cycle_monthly_actual_pv(self):
-        query = "SELECT DATE_FORMAT(fl_created_date,'%M') AS date_pv, "
+    def pending_payment_cycle_monthly_actual_pv(self, year = datetime.now().year):
+        query = "SELECT "
+        query += "DATE_FORMAT(fl_created_date,'%M') AS date_pv, "
         query += "SUM(fl_total_amount) AS total_pv "
-        query += "FROM ep_fulfilment  "
-        query += "WHERE fl_financial_year = '2019' "
+        query += "FROM ep_fulfilment_dtl_{}  ".format(year)
+        query += "WHERE fl_financial_year = '{}' ".format(year)
         query += "AND fl_module IN ('Contract Order','Purchase Order') "
+        query += "AND fl_latest_status_id IS NOT NULL "
         query += "GROUP BY DATE_FORMAT(fl_created_date,'%m-%Y') "
         resp = execute_query(query)
         return resp
 
-    def pending_payment_cycle_monthly_po_cancel(self):
+    def pending_payment_cycle_monthly_po_cancel(self, year = datetime.now().year):
         query = "SELECT DATE_FORMAT(fl_created_date,'%M') AS date_pv, "
         query += "SUM(fl_total_amount) AS total_pv_cancel "
-        query += "FROM ep_fulfilment "
-        query += "WHERE fl_financial_year = '2019' "
+        query += "FROM ep_fulfilment_dtl_{} ".format(year)
+        query += "WHERE fl_financial_year = '{}' ".format(year)
         query += "AND fl_module IN ('Contract Order','Purchase Order') "
         query += "AND fl_latest_status_id IN (41400,41900,47900,41440,41940,41430,40910,41410,41910,40810,41310) "
         query += "GROUP BY DATE_FORMAT(fl_created_date,'%m-%Y') "
         resp = execute_query(query)
         return resp
 
-    def pending_payment_cycle_monthly_payment(self, current_month):
+    def pending_payment_cycle_monthly_payment(self, current_month, year = datetime.now().year):
         query = "SELECT DATE_FORMAT(fl_trans_revenue_date,'%c') AS date_index, "
         query += "SUM(fl_total_amount) AS total_pv "
-        query += "FROM ep_fulfilment "
-        query += "WHERE fl_financial_year = '2019' "
+        query += "FROM ep_fulfilment_dtl_{} ".format(year)
+        query += "WHERE fl_financial_year = '{}' ".format(year)
         query += "AND fl_module IN ('Contract Order','Purchase Order') "
         query += "AND fl_latest_status_id IN (41030,41035,41535,41530,41030) "
-        query += "AND  DATE_FORMAT(fl_created_date,'%m-%Y') = '{}-2019' ".format(str(current_month).zfill(2))
+        query += "AND  DATE_FORMAT(fl_created_date,'%m-%Y') = '{}-{}' ".format(str(current_month).zfill(2), year)
         query += "GROUP BY DATE_FORMAT(fl_trans_revenue_date,'%M') "
         query += "HAVING date_index IS NOT NULL "
         query += "ORDER BY 1"
         resp = execute_query(query)
         return resp
 
-    def pv_status_actual_pv(self):
+    def pv_status_actual_pv(self, year = datetime.now().year):
         query = "SELECT fl_created_ministry_id AS ministry_id, "
         query += "SUM(fl_total_amount) AS total "
-        query += "FROM ep_fulfilment "
-        query += "WHERE fl_financial_year = '2019' "
+        query += "FROM ep_fulfilment_dtl_{} ".format(year)
+        query += "WHERE fl_financial_year = '{}' ".format(year)
         query += "AND fl_module IN ('Contract Order','Purchase Order') "
         query += "GROUP BY fl_created_ministry_id "
         resp = execute_query(query)
         return resp
 
-    def pv_status_cancel(self):
+    def pv_status_cancel(self,year = datetime.now().year):
         query = "SELECT "
         query += "fl.fl_created_ministry_id as ministry_id, "
         query += "SUM(fl.fl_total_amount) AS total "
-        query += "FROM ep_fulfilment fl "
-        query += "WHERE fl.fl_financial_year = '2019' "
+        query += "FROM ep_fulfilment_dtl_{} fl ".format(year)
+        query += "WHERE fl.fl_financial_year = '{}' ".format(year)
         query += "AND fl.fl_module IN ('Contract Order','Purchase Order') "
         query += "AND fl.fl_latest_status_id IN (41400,41900,47900,41440,41940,41430,40910,41410,41910,40810,41310) "
         query += "GROUP BY fl.fl_created_ministry_id "
         resp = execute_query(query)
         return resp
 
-    def pv_status_pending_payment(self):
+    def pv_status_pending_payment(self, year = datetime.now().year):
         query = "SELECT "
         query += "fl_created_ministry_id AS ministry_id, "
         query += "SUM(fl_total_amount) AS total "
-        query += "FROM ep_fulfilment "
-        query += "WHERE fl_financial_year = '2019' "
+        query += "FROM ep_fulfilment_dtl_{} ".format(year)
+        query += "WHERE fl_financial_year = '{}' ".format(year)
         query += "AND fl_module IN ('Contract Order','Purchase Order') "
         query += "AND fl_latest_status_id IN (41030,41035,41535,41530,41030) "
         query += "GROUP BY fl_created_ministry_id"

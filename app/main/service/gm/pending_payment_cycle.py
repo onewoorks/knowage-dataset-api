@@ -20,7 +20,6 @@ class PENDING_PAYMENT_DATASET:
 
 class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
     def PendingPaymentCycle(self,mode):
-        print(mode)
         return self.TemplateCycleBuilder(self.SAMPLE_PENDING_PAYMENT)
 
     def PendingPaymentCycleMilFix(self, returned_data):
@@ -61,30 +60,31 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
         monthly_actual_pv = gm_query.pending_payment_cycle_monthly_actual_pv()
         monthly_po_cancel = gm_query.pending_payment_cycle_monthly_po_cancel()
         heading = self.PendingPaymentDatasetConstruct(self.HEADING)
-        pending_payment_month = self.PendingPaymentMonthlyInfo()
+        pending_payment_month = self.pending_payment_monthly_info()
         pending_payment_data = [heading]
         pending_payment_data_percent = [heading]
         plain_value = []
         for r in range(datetime.today().month):
-            pv_expected = float(monthly_actual_pv[r]['total_pv']) - float(monthly_po_cancel[r]['total_pv_cancel'])
-            rowset = [
-                common.GetMonthName(r+1),
-                "{:,.2f}".format(float(monthly_actual_pv[r]['total_pv'])),
-                "{:,.2f}".format(float(monthly_po_cancel[r]['total_pv_cancel'])),
-                "{:,.2f}".format(float(pv_expected)),
-                ]
-            by_value = rowset + pending_payment_month[int(r)]
-            by_percentage = rowset + self.PendingPaymentCyclePercentage(pending_payment_month[int(r)],pv_expected)
-            
-            balance_pv = pv_expected - by_value[-1]
-            by_value[-1] = "{:,.2f}".format(by_value[-1])
-            by_value.append("{:,.2f}".format(balance_pv))
-            plain_value.append(by_value)
+            if r < len(monthly_actual_pv):
+                pv_expected = float(monthly_actual_pv[r]['total_pv']) - float(monthly_po_cancel[r]['total_pv_cancel'])
+                rowset = [
+                    common.GetMonthName(r+1),
+                    "{:,.2f}".format(float(monthly_actual_pv[r]['total_pv'])),
+                    "{:,.2f}".format(float(monthly_po_cancel[r]['total_pv_cancel'])),
+                    "{:,.2f}".format(float(pv_expected)),
+                    ]
+                by_value = rowset + pending_payment_month[int(r)]
+                by_percentage = rowset + self.PendingPaymentCyclePercentage(pending_payment_month[int(r)],pv_expected)
+                
+                balance_pv = pv_expected - by_value[-1]
+                by_value[-1] = "{:,.2f}".format(by_value[-1])
+                by_value.append("{:,.2f}".format(balance_pv))
+                plain_value.append(by_value)
 
-            balance_pv_percentage = "{:.2f} %".format((balance_pv/pv_expected)*100)
-            by_percentage.append(balance_pv_percentage)
-            pending_payment_data.append(self.PendingPaymentDatasetConstruct(by_value))
-            pending_payment_data_percent.append(self.PendingPaymentDatasetConstruct(by_percentage))
+                balance_pv_percentage = "{:.2f} %".format((balance_pv/pv_expected)*100)
+                by_percentage.append(balance_pv_percentage)
+                pending_payment_data.append(self.PendingPaymentDatasetConstruct(by_value))
+                pending_payment_data_percent.append(self.PendingPaymentDatasetConstruct(by_percentage))
         
         pending_payment_data.append(self.PendingPaymentDatasetConstruct(self.PendingPaymentCycleSummary(plain_value)))
         pending_payment_data_percent.append(self.PendingPaymentDatasetConstruct(self.PendingPaymentCycleSummary(plain_value,'percent')))
@@ -182,7 +182,7 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
         gm_query.create_new_ws(input)
         return dataset
 
-    def PendingPaymentMonthlyInfo(self):
+    def pending_payment_monthly_info(self):
         gm_query = MYSQL_GM_QUERY()
         to_current_month = []
         for i in range(datetime.today().month):
@@ -199,8 +199,11 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
                     by_value.append("null")
                     by_percent.append("null")
                 else:
-                    grand_total += float(total_pv[month_pos]['total_pv'])
-                    current_pos = "{:,.0f}".format(float(total_pv[month_pos]['total_pv'])) if len(total_pv) > 0 and total_pv[month_pos]['total_pv'] != '' else ""
+                    if month_pos < len(total_pv):
+                        grand_total += float(total_pv[month_pos]['total_pv'])
+                        current_pos = "{:,.0f}".format(float(total_pv[month_pos]['total_pv'])) if len(total_pv) > 0 and total_pv[month_pos]['total_pv'] != '' else ""
+                    else:
+                        current_pos = ""
                     by_value.append(current_pos)
                     month_pos += 1
             by_value.append(grand_total)
