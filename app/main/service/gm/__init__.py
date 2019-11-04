@@ -8,4 +8,4 @@ class GM_Lovs:
         for y in reversed(fulfilment_years):
             year = y['Tables_in_cdccms (ep_fulfilment_dtl_%)'].split('_')
             years.append(year[-1])
-        return {"years":years}
+        return years
