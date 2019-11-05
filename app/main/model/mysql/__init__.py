@@ -45,7 +45,7 @@ class Common_Query():
         query += ")"
         mysql_insert_query(query)
 
-    def Get_Latest_WS_Data(self, ws_name):
+    def get_latest_ws_data(self, ws_name):
         query = "SELECT ws_data "
         query += "FROM ws_data "
         query += "WHERE ws_name = '{}' ".format(ws_name)

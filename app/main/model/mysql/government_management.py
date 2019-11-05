@@ -13,7 +13,7 @@ class MYSQL_GM_QUERY():
     def create_archived_ws(self, ws_data, year):
         common_query.register_archived_ws(ws_data, year)
 
-    def Get_Latest_WS(self,module_name):
+    def get_latest_ws(self,module_name):
         return common_query.get_latest_ws_data(module_name)
 
     def get_archived_dataset(self, module_name, year):

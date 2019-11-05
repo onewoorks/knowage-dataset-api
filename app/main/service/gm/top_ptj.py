@@ -29,15 +29,15 @@ class GM_TopPtj(TOP_PTJ_SETTER):
 
     def __CheckWS(self, year):
         ws_name = self.WS_NAME['PTJ_TOP_100']
-        if year == datetime.now().year:
+        if year == None:
             existed = gm_query.get_latest_ws(ws_name)
         else :
             existed = gm_query.get_archived_dataset(ws_name, year)
-        # if len(existed) > 0:
-        #     dataset = json.loads(existed[0]['ws_data'])
-        # else:
-            # dataset = self.__CreateWSData()
-        # return dataset
+        if len(existed) > 0:
+            dataset = json.loads(existed[0]['ws_data'])
+        else:
+            dataset = self.__CreateWSData()
+        return dataset
 
     def __PtjProfile(self):
         ptjs = gm_query.Read_PTJ_Profile()
