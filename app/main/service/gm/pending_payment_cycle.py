@@ -45,20 +45,21 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
             clean[i] = val
         return clean
 
-    def PendingPaymentCycleFromETL(self):
+    def PendingPaymentCycleFromETL(self, year):
+        year = datetime.now().year if year == None else year
         ws_name = "GM_PENDING_PAYMENT_CYCLE"
         gm_query = MYSQL_GM_QUERY()
-        existed = gm_query.Get_Latest_WS(ws_name)
+        existed = gm_query.get_latest_ws(ws_name) if year == None else gm_query.get_archived_dataset(ws_name, year)
         if len(existed) > 0:
             dataset = json.loads(existed[0]['ws_data'])
         else:
-            dataset = self.__new_pending_payment_cycle()
+            dataset = self.create_new_pending_payment_cycle_dataset(year)
         return dataset
 
-    def CreatePendingPaymentCycleWS(self):
+    def CreatePendingPaymentCycleWS(self, year):
         gm_query = MYSQL_GM_QUERY()
-        monthly_actual_pv = gm_query.pending_payment_cycle_monthly_actual_pv()
-        monthly_po_cancel = gm_query.pending_payment_cycle_monthly_po_cancel()
+        monthly_actual_pv = gm_query.pending_payment_cycle_monthly_actual_pv(year)
+        monthly_po_cancel = gm_query.pending_payment_cycle_monthly_po_cancel(year)
         heading = self.PendingPaymentDatasetConstruct(self.HEADING)
         pending_payment_month = self.pending_payment_monthly_info()
         pending_payment_data = [heading]
@@ -156,11 +157,11 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
         ]
         return pivot_summary
         
-    def __new_pending_payment_cycle(self):
+    def __new_pending_payment_cycle(self, year):
         start_time = datetime.now()
         print('-- GM PENDING PAYMENT CYCLE --')
         print('-- start query----')
-        dataset = self.CreatePendingPaymentCycleWS()
+        dataset = self.CreatePendingPaymentCycleWS(year)
         print('-- end query-----')
         end_time = datetime.now()
 
@@ -179,7 +180,10 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
             "ws_error": ""
         }
         gm_query = MYSQL_GM_QUERY()
-        gm_query.create_new_ws(input)
+        if year == datetime.now().year:
+            gm_query.create_new_ws(input)
+        else:
+            gm_query.create_archived_ws(input, year)
         return dataset
 
     def pending_payment_monthly_info(self):
@@ -218,5 +222,8 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
             content[start_column+i] = rowset[i]
         return content
 
-    def create_new_pending_payment_cycle_dataset(self):
-        self.__new_pending_payment_cycle()
+    def create_new_pending_payment_cycle_dataset(self, year = datetime.now().year):
+        self.__new_pending_payment_cycle(year)
+
+    def test_dulu(self, year = datetime.now().year):
+        return year

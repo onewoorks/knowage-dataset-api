@@ -9,10 +9,15 @@ class MYSQL_GM_QUERY():
 
     def create_new_ws(self, ws_data):
         common_query.Register_New_Ws(ws_data)
-        pass
+
+    def create_archived_ws(self, ws_data, year):
+        common_query.register_archived_ws(ws_data, year)
 
     def Get_Latest_WS(self,module_name):
-        return common_query.Get_Latest_WS_Data(module_name)
+        return common_query.get_latest_ws_data(module_name)
+
+    def get_archived_dataset(self, module_name, year):
+        return common_query.get_archived_ws_dataset(module_name, year)
 
     def yearly_target(self):
         query = "SELECT sum(target_year) AS yearly_target "

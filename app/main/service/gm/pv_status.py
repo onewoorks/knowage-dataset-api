@@ -53,7 +53,7 @@ class PVStatusPerformanceUpdate(PVStatus):
     def PVStatusSummaryFromETL(self):
         ws_name = "GM_PV_STATUS"
         gm_query = MYSQL_GM_QUERY()
-        existed = gm_query.Get_Latest_WS(ws_name)
+        existed = gm_query.get_latest_ws(ws_name)
         if len(existed) > 0:
             dataset = json.loads(existed[0]['ws_data'])
         else:

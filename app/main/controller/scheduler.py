@@ -20,3 +20,12 @@ class SchedularGenerate(Resource):
         return {
             "status" : "scheduler run completed"
         }
+
+@api.route('/generate-archived-dataset/fulfilment')
+class SchedularGenerateArchivedDataset(Resource):
+    def get(self):
+        param_year = flask.request.args.get("year")
+        PendingPaymentCyclePerformanceUpdate().create_new_pending_payment_cycle_dataset(param_year)
+        return {
+            "status" : "Archived data created"
+        }

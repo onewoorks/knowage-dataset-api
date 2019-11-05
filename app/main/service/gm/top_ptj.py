@@ -23,18 +23,21 @@ class GM_TopPtj(TOP_PTJ_SETTER):
             dataset = self.__BirtDataset(dataset)
         return dataset
 
-    def TopPtjListSummary(self):
-        dataset = self.__DatasetSummary(self.__CheckWS())
+    def top_ptj_list_summary(self, year):
+        dataset = self.__DatasetSummary(self.__CheckWS(year))
         return dataset
 
-    def __CheckWS(self):
+    def __CheckWS(self, year):
         ws_name = self.WS_NAME['PTJ_TOP_100']
-        existed = gm_query.Get_Latest_WS(ws_name)
-        if len(existed) > 0:
-            dataset = json.loads(existed[0]['ws_data'])
-        else:
-            dataset = self.__CreateWSData()
-        return dataset
+        if year == datetime.now().year:
+            existed = gm_query.get_latest_ws(ws_name)
+        else :
+            existed = gm_query.get_archived_dataset(ws_name, year)
+        # if len(existed) > 0:
+        #     dataset = json.loads(existed[0]['ws_data'])
+        # else:
+            # dataset = self.__CreateWSData()
+        # return dataset
 
     def __PtjProfile(self):
         ptjs = gm_query.Read_PTJ_Profile()

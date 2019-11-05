@@ -1,5 +1,5 @@
 
-from flask import request
+import flask
 
 from flask_restplus import Namespace, Resource, fields
 from ..service.gm.contribution_of_pv import ContributionOfPVPerformanceUpdate
@@ -23,26 +23,26 @@ gm_pv_tr_summary = PvTrSummaryPerformanceUpdate()
 gm_pv_status = PVStatusPerformanceUpdate()
 
 @api.route('/pv-summary')
-class GM_PVSummary(Resource):
+class GMPVSummary(Resource):
     def get(self):
         data = gm_pv_tr_summary.PVSummary()
         return data
 
 @api.route('/tr-summary')
-class GM_TRSummary(Resource):
+class GMTRSummary(Resource):
     def get(self):
         data = gm_pv_tr_summary.TRSummary()
         return data
 
 @api.route('/pv-status')
-class GM_PVStatus(Resource):
+class GMPVStatus(Resource):
     def get(self):
         data = gm_pv_status.PVStatusSummaryFromETL()
         return data
 
 # @api.route('/pending-payment-cycle/<mode>/', endpoint= "pending-payment-cycle", defaults={ 'mode': 'amount'})
 # @api.param('mode',"amount, percentage")
-# class GM_PendingPaymentCycle(Resource):
+# class GMPendingPaymentCycle(Resource):
 #     def show(self,mode):
 #         pass
 
@@ -51,79 +51,79 @@ class GM_PVStatus(Resource):
 #         return data
 
 @api.route('/pending-payment-cycle')
-class GM_PendingPaymentCycle(Resource):
+class GMPendingPaymentCycle(Resource):
     def get(self):
-        data = gm_pending_payment_cycle.PendingPaymentCycleFromETL()
+        year = flask.request.args.get("year")
+        data = gm_pending_payment_cycle.PendingPaymentCycleFromETL(year)
         return data
 
 @api.route('/contribution-of-pv-by-ptj')
-class GM_ContributionOfPVByPtj(Resource):
+class GMContributionOfPVByPtj(Resource):
     def get(self):
         data = gm_contrubution_of_pv.ContributionOfPVByPtj()
         return data
 
 @api.route('/top-100-ptj-details')
-class GM_Top100PtjDetails(Resource):
+class GMTop100PtjDetails(Resource):
     def get(self):
         return {
             "record": "Top 100 PTJ Details"
         }
 
 @api.route('/number-of-ptj-by-location-and-ministry')
-class GM_NumberOfPtjLocationMinistry(Resource):
+class GMNumberOfPtjLocationMinistry(Resource):
     def get(self):
         query_result = gm_query.get_ministry_location_count()
         data = gm_pv_status.NumberOFPTJsByLocation(query_result)
         return data
 
 @api.route('/number-of-ptj-by-ministry')
-class GM_NumberOfPtjByMinistry(Resource):
+class GMNumberOfPtjByMinistry(Resource):
     def get(self):
         query_result = gm_query.get_ministry_no_of_ptj()
         data = gm_pv_status.NumberOfPtjByMinistry(query_result)
         return data
 
 @api.route('/year-target')
-class GM_YearTarget(Resource):
+class GMYearTarget(Resource):
     def get(self):
         gm_target = GM_Target()
         data = gm_target.Target_Sampling()
         return data
 
 @api.route('/year-target-pivot')
-class GM_YearTargetPivot(Resource):
+class GMYearTargetPivot(Resource):
     def get(self):
         gm_target = GM_Target()
         data = gm_target.Target_Sampling_Pivotal()
         return data
 
 @api.route('/revenue')
-class GM_RevenueRoute(Resource):
+class GMRevenueRoute(Resource):
     def get(self):
         gm_revenue = GM_Revenue()
         data = gm_revenue.Revenue_Summary()
         return data
 
 @api.route('/revenue-pivot')
-class GM_RevenuePivot(Resource):
+class GMRevenuePivot(Resource):
     def get(self):
         gm_revenue = GM_Revenue()
         data = gm_revenue.Revenue_Pivot()
         return data
 
 @api.route('/top-ptj')
-class GM_TopPtjRoute(Resource):
+class GMTopPtjRoute(Resource):
     def get(self):
         gm_top = GM_TopPtj()
         data = gm_top.TopPtjList('birt')
         return data
 
 @api.route('/top-ptj-summary')
-class GM_TopPtjSummaryRoute(Resource):
+class GMTopPtjSummaryRoute(Resource):
     def get(self):
-        # print(flask.request.args.get("name"))
-        summary = GM_TopPtj()
-        data = summary.TopPtjListSummary()
+        year = flask.request.args.get("year")
+        data = GM_TopPtj().top_ptj_list_summary(year)
         return data
 
     
