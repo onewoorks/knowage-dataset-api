@@ -50,7 +50,7 @@ class Common_Query():
         query += "FROM ws_data "
         query += "WHERE ws_name = '{}' ".format(ws_name)
         query += "AND ws_is_active = 1 "
-        query += "ORDER BY ws_id DESC LIMIT 1"
+        query += "ORDER BY ws_id DESC LIMIT 1 ;"
         resp = execute_query(query)
         return resp
 

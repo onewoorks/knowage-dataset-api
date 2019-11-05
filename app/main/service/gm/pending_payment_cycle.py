@@ -47,9 +47,10 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
 
     def PendingPaymentCycleFromETL(self, year):
         year = datetime.now().year if year == None else year
+        year = str(datetime.now().year) if year == 'null' else year
         ws_name = "GM_PENDING_PAYMENT_CYCLE"
         gm_query = MYSQL_GM_QUERY()
-        existed = gm_query.get_latest_ws(ws_name) if year == None else gm_query.get_archived_dataset(ws_name, year)
+        existed = gm_query.get_latest_ws(ws_name) if year == str(datetime.now().year) else gm_query.get_archived_dataset(ws_name, year)
         if len(existed) > 0:
             dataset = json.loads(existed[0]['ws_data'])
         else:
@@ -61,7 +62,7 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
         monthly_actual_pv = gm_query.pending_payment_cycle_monthly_actual_pv(year)
         monthly_po_cancel = gm_query.pending_payment_cycle_monthly_po_cancel(year)
         heading = self.PendingPaymentDatasetConstruct(self.HEADING)
-        pending_payment_month = self.pending_payment_monthly_info()
+        pending_payment_month = self.pending_payment_monthly_info(year)
         pending_payment_data = [heading]
         pending_payment_data_percent = [heading]
         plain_value = []
@@ -186,14 +187,14 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
             gm_query.create_archived_ws(input, year)
         return dataset
 
-    def pending_payment_monthly_info(self):
+    def pending_payment_monthly_info(self, year):
         gm_query = MYSQL_GM_QUERY()
         to_current_month = []
         for i in range(datetime.today().month):
             by_value = []
             by_percent = []
             grand_total = 0
-            total_pv = gm_query.pending_payment_cycle_monthly_payment(i+1)
+            total_pv = gm_query.pending_payment_cycle_monthly_payment(i+1, year)
             month_pos = 0
             for m in range(12):
                 if m < i:
