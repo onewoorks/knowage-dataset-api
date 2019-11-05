@@ -50,7 +50,10 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
         year = str(datetime.now().year) if year == 'null' else year
         ws_name = "GM_PENDING_PAYMENT_CYCLE"
         gm_query = MYSQL_GM_QUERY()
-        print(year)
+        if year == str(datetime.now().year):
+            print('null or none or same')
+        else:
+            print('last or prev year')
         existed = gm_query.get_latest_ws(ws_name) if year == str(datetime.now().year) else gm_query.get_archived_dataset(ws_name, year)
         if len(existed) > 0:
             dataset = json.loads(existed[0]['ws_data'])
