@@ -47,6 +47,7 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
 
     def PendingPaymentCycleFromETL(self, year):
         year = datetime.now().year if year == None else year
+        print(type(year))
         year = str(datetime.now().year) if year == 'null' else year
         ws_name = "GM_PENDING_PAYMENT_CYCLE"
         gm_query = MYSQL_GM_QUERY()
