@@ -58,7 +58,7 @@ class Common_Query():
         query = "SELECT ws_data "
         query += "FROM ws_data_archived "
         query += "WHERE ws_name = '{}' ".format(ws_name)
-        query += "AND ws_is_active = 1 AND archived_year = `{}` ".format(year.replace("'",""))
+        query += "AND ws_is_active = 1 AND archived_year = '{}' ".format(year.replace("'","\'"))
         query += "ORDER BY ws_id DESC LIMIT 1"
         print(query)
         resp = execute_query(query)
