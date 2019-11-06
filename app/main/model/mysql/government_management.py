@@ -83,7 +83,7 @@ class MYSQL_GM_QUERY():
         query += "WHERE fl_financial_year = '{}' ".format(year.replace("'",""))
         query += "AND fl_module IN ('Contract Order','Purchase Order') "
         query += "AND fl_latest_status_id IN (41030,41035,41535,41530,41030) "
-        query += "AND  DATE_FORMAT(fl_created_date,'%m-%Y') = '{}-{}' ".format(str(current_month).zfill(2), year)
+        query += "AND  DATE_FORMAT(fl_created_date,'%m-%Y') = '{}-{}' ".format(str(current_month).zfill(2), year.replace("'",""))
         query += "GROUP BY DATE_FORMAT(fl_trans_revenue_date,'%M') "
         query += "HAVING date_index IS NOT NULL "
         query += "ORDER BY 1"
