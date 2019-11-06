@@ -123,7 +123,7 @@ class GMTopPtjRoute(Resource):
 class GMTopPtjSummaryRoute(Resource):
     def get(self):
         year = flask.request.args.get("year")
-        data = GM_TopPtj().top_ptj_list_summary(year)
+        data = GM_TopPtj().top_ptj_list_summary(str(year).replace("'",""))
         return data
 
     
