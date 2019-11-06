@@ -89,6 +89,5 @@ class CommonMethod:
         input = input.replace("'","")
         if input == 'null' :
             input = datetime.now().year
-        if input == None:
-            input = datetime.now().year
-        return str(input)
+        final_clean = input if str(input) != "%" else str(datetime.now().year)
+        return final_clean
