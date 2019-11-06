@@ -55,8 +55,8 @@ class MYSQL_GM_QUERY():
         query = "SELECT "
         query += "DATE_FORMAT(fl_created_date,'%M') AS date_pv, "
         query += "SUM(fl_total_amount) AS total_pv "
-        query += "FROM ep_fulfilment_dtl_{}  ".format(year)
-        query += "WHERE fl_financial_year = '{}' ".format(year)
+        query += "FROM ep_fulfilment_dtl_{}  ".format(year.replace("'",""))
+        query += "WHERE fl_financial_year = '{}' ".format(year.replace("'",""))
         query += "AND fl_module IN ('Contract Order','Purchase Order') "
         query += "AND fl_latest_status_id IS NOT NULL "
         query += "GROUP BY DATE_FORMAT(fl_created_date,'%m-%Y') "
