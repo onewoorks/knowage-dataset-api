@@ -13,6 +13,7 @@ from ..service.gm.top_ptj import GM_TopPtj
 from ..service.gm import GM_Lovs
 
 from ..model.gm_query import GM_Query
+from ..service.common import CommonMethod
 
 gm_query = GM_Query()
 
@@ -54,8 +55,8 @@ class GMPVStatus(Resource):
 @api.route('/pending-payment-cycle')
 class GMPendingPaymentCycle(Resource):
     def get(self):
-        year = flask.request.args.get("year")
-        data = gm_pending_payment_cycle.PendingPaymentCycleFromETL(year)
+        year = CommonMethod().year_parameter(flask.request.args.get("year"))
+        data = gm_pending_payment_cycle.pending_payment_cycle_from_etl(year)
         return data
 
 @api.route('/contribution-of-pv-by-ptj')

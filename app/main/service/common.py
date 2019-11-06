@@ -1,6 +1,8 @@
 from ..model import execute_query, insert_ws_data
 from ..model.gm_query import GM_Query
 
+from datetime import datetime
+
 gm_query = GM_Query()
 
 class CommonMethod:
@@ -80,3 +82,13 @@ class CommonMethod:
     
     def NumberFixedDecimal(self, value, decimal = 2):
         return round(value, decimal)
+
+    def year_parameter(self, input):
+        if input == None:
+            input = str(datetime.now().year)
+        input = input.replace("'","")
+        if input == 'null' :
+            input = datetime.now().year
+        if input == None:
+            input = datetime.now().year
+        return str(input)

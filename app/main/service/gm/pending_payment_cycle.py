@@ -45,12 +45,10 @@ class PendingPaymentCyclePerformanceUpdate(PENDING_PAYMENT_DATASET):
             clean[i] = val
         return clean
 
-    def PendingPaymentCycleFromETL(self, year):
-        year = str(datetime.now().year) if year == None else str(year)
-        year = str(datetime.now().year) if year == 'null' else year
+    def pending_payment_cycle_from_etl(self, year):
         ws_name = "GM_PENDING_PAYMENT_CYCLE"
         gm_query = MYSQL_GM_QUERY()
-        existed = gm_query.get_latest_ws(ws_name) if year == str(datetime.now().year) else gm_query.get_archived_dataset(ws_name, year)
+        existed = gm_query.get_latest_ws(ws_name) if str(year) == str(datetime.now().year) else gm_query.get_archived_dataset(ws_name, year)
         if len(existed) > 0:
             dataset = json.loads(existed[0]['ws_data'])
         else:
