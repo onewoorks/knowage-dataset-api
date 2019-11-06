@@ -67,8 +67,8 @@ class MYSQL_GM_QUERY():
         year = datetime.now().year if year == 'null' else year
         query = "SELECT DATE_FORMAT(fl_created_date,'%M') AS date_pv, "
         query += "SUM(fl_total_amount) AS total_pv_cancel "
-        query += "FROM ep_fulfilment_dtl_{} ".format(year)
-        query += "WHERE fl_financial_year = '{}' ".format(year)
+        query += "FROM ep_fulfilment_dtl_{} ".format(year.replace("'",""))
+        query += "WHERE fl_financial_year = '{}' ".format(year.replace("'",""))
         query += "AND fl_module IN ('Contract Order','Purchase Order') "
         query += "AND fl_latest_status_id IN (41400,41900,47900,41440,41940,41430,40910,41410,41910,40810,41310) "
         query += "GROUP BY DATE_FORMAT(fl_created_date,'%m-%Y') "
@@ -79,8 +79,8 @@ class MYSQL_GM_QUERY():
         year = datetime.now().year if year == 'null' else year
         query = "SELECT DATE_FORMAT(fl_trans_revenue_date,'%c') AS date_index, "
         query += "SUM(fl_total_amount) AS total_pv "
-        query += "FROM ep_fulfilment_dtl_{} ".format(year)
-        query += "WHERE fl_financial_year = '{}' ".format(year)
+        query += "FROM ep_fulfilment_dtl_{} ".format(year.replace("'",""))
+        query += "WHERE fl_financial_year = '{}' ".format(year.replace("'",""))
         query += "AND fl_module IN ('Contract Order','Purchase Order') "
         query += "AND fl_latest_status_id IN (41030,41035,41535,41530,41030) "
         query += "AND  DATE_FORMAT(fl_created_date,'%m-%Y') = '{}-{}' ".format(str(current_month).zfill(2), year)
@@ -94,8 +94,8 @@ class MYSQL_GM_QUERY():
         year = datetime.now().year if year == 'null' else year
         query = "SELECT fl_created_ministry_id AS ministry_id, "
         query += "SUM(fl_total_amount) AS total "
-        query += "FROM ep_fulfilment_dtl_{} ".format(year)
-        query += "WHERE fl_financial_year = '{}' ".format(year)
+        query += "FROM ep_fulfilment_dtl_{} ".format(year.replace("'",""))
+        query += "WHERE fl_financial_year = '{}' ".format(year.replace("'",""))
         query += "AND fl_module IN ('Contract Order','Purchase Order') "
         query += "GROUP BY fl_created_ministry_id "
         resp = execute_query(query)
@@ -106,8 +106,8 @@ class MYSQL_GM_QUERY():
         query = "SELECT "
         query += "fl.fl_created_ministry_id as ministry_id, "
         query += "SUM(fl.fl_total_amount) AS total "
-        query += "FROM ep_fulfilment_dtl_{} fl ".format(year)
-        query += "WHERE fl.fl_financial_year = '{}' ".format(year)
+        query += "FROM ep_fulfilment_dtl_{} fl ".format(year.replace("'",""))
+        query += "WHERE fl.fl_financial_year = '{}' ".format(year.replace("'",""))
         query += "AND fl.fl_module IN ('Contract Order','Purchase Order') "
         query += "AND fl.fl_latest_status_id IN (41400,41900,47900,41440,41940,41430,40910,41410,41910,40810,41310) "
         query += "GROUP BY fl.fl_created_ministry_id "
@@ -119,8 +119,8 @@ class MYSQL_GM_QUERY():
         query = "SELECT "
         query += "fl_created_ministry_id AS ministry_id, "
         query += "SUM(fl_total_amount) AS total "
-        query += "FROM ep_fulfilment_dtl_{} ".format(year)
-        query += "WHERE fl_financial_year = '{}' ".format(year)
+        query += "FROM ep_fulfilment_dtl_{} ".format(year.replace("'",""))
+        query += "WHERE fl_financial_year = '{}' ".format(year.replace("'",""))
         query += "AND fl_module IN ('Contract Order','Purchase Order') "
         query += "AND fl_latest_status_id IN (41030,41035,41535,41530,41030) "
         query += "GROUP BY fl_created_ministry_id"
@@ -173,7 +173,7 @@ class MYSQL_GM_QUERY():
         query += "SUM(target_month) AS target "
         query += "FROM ep_ref_target_gm "
         query += "WHERE "
-        query += "YEAR = '{}' ".format(year)
+        query += "YEAR = '{}' ".format(year.replace("'",""))
         query += "AND MONTH <= '{}'".format(month)
         query +=  "AND (group_top_ptj = 'TOP 01-50' OR group_top_ptj = 'TOP 51-100') "
         query += "GROUP BY ptj_code"
