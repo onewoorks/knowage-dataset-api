@@ -64,7 +64,7 @@ class MYSQL_GM_QUERY():
         return resp
 
     def pending_payment_cycle_monthly_po_cancel(self, year):
-        year = datetime.now().year if year == 'null' else year
+        year = str(datetime.now().year) if year == 'null' else str(year)
         query = "SELECT DATE_FORMAT(fl_created_date,'%M') AS date_pv, "
         query += "SUM(fl_total_amount) AS total_pv_cancel "
         query += "FROM ep_fulfilment_dtl_{} ".format(year.replace("'",""))
@@ -76,7 +76,7 @@ class MYSQL_GM_QUERY():
         return resp
 
     def pending_payment_cycle_monthly_payment(self, current_month, year):
-        year = datetime.now().year if year == 'null' else year
+        year = str(datetime.now().year) if year == 'null' else str(year)
         query = "SELECT DATE_FORMAT(fl_trans_revenue_date,'%c') AS date_index, "
         query += "SUM(fl_total_amount) AS total_pv "
         query += "FROM ep_fulfilment_dtl_{} ".format(year.replace("'",""))
@@ -91,7 +91,7 @@ class MYSQL_GM_QUERY():
         return resp
 
     def pv_status_actual_pv(self, year):
-        year = datetime.now().year if year == 'null' else year
+        year = str(datetime.now().year) if year == 'null' else str(year)
         query = "SELECT fl_created_ministry_id AS ministry_id, "
         query += "SUM(fl_total_amount) AS total "
         query += "FROM ep_fulfilment_dtl_{} ".format(year.replace("'",""))
@@ -102,7 +102,7 @@ class MYSQL_GM_QUERY():
         return resp
 
     def pv_status_cancel(self,year):
-        year = datetime.now().year if year == 'null' else year
+        year = str(datetime.now().year) if year == 'null' else str(year)
         query = "SELECT "
         query += "fl.fl_created_ministry_id as ministry_id, "
         query += "SUM(fl.fl_total_amount) AS total "
@@ -115,7 +115,7 @@ class MYSQL_GM_QUERY():
         return resp
 
     def pv_status_pending_payment(self, year):
-        year = datetime.now().year if year == 'null' else year
+        year = str(datetime.now().year) if year == 'null' else str(year)
         query = "SELECT "
         query += "fl_created_ministry_id AS ministry_id, "
         query += "SUM(fl_total_amount) AS total "
