@@ -232,5 +232,5 @@ class RazerPayServices(RazerPaySetter):
         return dataset
 
     def load_ws_data(self, ws_name):
-        response = Common_Query().Get_Latest_WS_Data(ws_name)[0]['ws_data']
+        response = Common_Query().get_latest_ws_data(ws_name)[0]['ws_data']
         return json.loads(response)

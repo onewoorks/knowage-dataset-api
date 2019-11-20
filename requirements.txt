@@ -10,3 +10,4 @@ PyMySQL==0.9.3
 cx_Oracle==7.2.3
 python-dotenv==0.10.3
 scikit_learn==0.21.3
+xlrd==1.2.0
