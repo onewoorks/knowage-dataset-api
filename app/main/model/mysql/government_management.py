@@ -191,3 +191,30 @@ class MYSQL_GM_QUERY():
     def list_of_available_fulfilment_year(self):
         query = "SHOW TABLES LIKE 'ep_fulfilment_dtl_%'"
         return execute_query(query)
+
+
+    def forecast_contract_utilization(self, ministry_name):
+        query = "SELECT "
+        query += "{}, ".format('"All Ministries" as ct_ministry_name_created' if ministry_name == 'ALL' else "ct_ministry_name_created")
+        query += "SUM(ct_contract_amount) AS ct_contract_amount, "
+        query += "SUM(fl_summary_amount) AS utilization, "
+        query += "SUM(amount_available) AS amount_available, " 
+        query += "SUM(forecast_thisyear) AS forecast_thisyear, " 
+        query += "SUM(forecast_nextyear) AS forecast_nextyear , "
+        query += "SUM(forecast_next2years) AS forecast_next2years, "
+        query += "SUM(forecast_next3years) AS forecast_next3years, "
+        query += "SUM(forecast_next4years) AS forecast_next4years, "
+        query += "SUM(forecast_next5years)  AS forecast_next5years "
+        query += "FROM ep_contract_forecast "
+        query += "WHERE "
+        query += "forecast_thisyear >= 0 "
+        query += "AND forecast_nextyear >= 0 "
+        query += "AND  forecast_next2years >= 0 "
+        query += "AND  forecast_next3years >= 0 "
+        query += "AND  forecast_next4years >= 0 "
+        query += "AND  forecast_next5years >= 0 "
+        if ministry_name == 'ALL':
+            query += "GROUP BY ct_ministry_name_created"
+        else:
+            query += "AND ct_ministry_name_created = '{}' ".format(ministry_name)
+        return execute_query(query)

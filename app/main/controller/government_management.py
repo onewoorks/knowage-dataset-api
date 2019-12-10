@@ -11,6 +11,7 @@ from ..service.gm.target import GM_Target
 from ..service.gm.revenue import GM_Revenue
 from ..service.gm.top_ptj import GM_TopPtj
 from ..service.gm import GM_Lovs
+from ..service.gm.super_summary import SupperSummaryService
 
 from ..model.gm_query import GM_Query
 from ..service.common import CommonMethod
@@ -133,3 +134,8 @@ class GMTopPtjSummaryRoute(Resource):
 class GMFulfilmentYearRoute(Resource):
     def get(self):
         return GM_Lovs().available_fulfilment_year()
+
+@api.route('/forecast-contract-utilization/<ministry_name>')
+class GMForecastContractUilizationRoute(Resource):
+    def get(self,ministry_name):
+        return SupperSummaryService().forecast_contract_utilization(ministry_name.upper())
